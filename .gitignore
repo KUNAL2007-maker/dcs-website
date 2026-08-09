@@ -1,0 +1,15 @@
+# Local tooling / editor
+.claude/
+.vscode/
+.idea/
+
+# OS cruft
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Node
+node_modules/
+
+# Separate project, not part of this site
+di3/
