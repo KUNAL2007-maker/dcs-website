@@ -403,6 +403,12 @@
 
             <!-- Action Controls -->
             <div class="flex items-center gap-2 flex-shrink-0">
+                <!-- Account / Login (Firebase Auth) -->
+                <button id="btn-account" class="font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-3 py-2 hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2 font-bold whitespace-nowrap">
+                    <i id="account-icon" class="fa-solid fa-right-to-bracket text-sm"></i>
+                    <span id="account-label" class="hidden sm:inline">LOG IN</span>
+                </button>
+
                 <!-- Cart Button with Counter -->
                 <button id="btn-cart-toggle" class="font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-3 py-2 hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2 font-bold whitespace-nowrap">
                     <i class="fa-solid fa-cart-shopping text-sm"></i>
@@ -1264,6 +1270,198 @@
         </div>
     </div>
 
+    <!-- ============================================ -->
+    <!-- LOGIN / SIGNUP MODAL (Firebase Auth)         -->
+    <!-- ============================================ -->
+    <div id="auth-modal" class="hidden fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="glass-panel border-2 border-primary max-w-md w-full p-6 md:p-8 relative my-8">
+
+            <button id="btn-auth-close" class="absolute top-4 right-4 text-gray-400 hover:text-primary font-mono text-sm">[X]</button>
+
+            <!-- Header -->
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 border-2 border-primary mx-auto mb-3 flex items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-primary text-xl"></i>
+                </div>
+                <h3 id="auth-title" class="font-mono text-lg font-extrabold text-white uppercase tracking-wide">SECURE ACCESS</h3>
+                <p id="auth-subtitle" class="font-sans text-xs text-gray-400 mt-1">Log in to continue your enrollment</p>
+            </div>
+
+            <!-- Google Sign-In -->
+            <button id="btn-google-signin" class="w-full bg-white text-gray-800 py-3 font-sans font-bold text-sm flex items-center justify-center gap-3 hover:bg-gray-100 transition-all mb-4">
+                <svg class="w-5 h-5" viewBox="0 0 48 48" aria-hidden="true">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Continue with Google
+            </button>
+
+            <div class="flex items-center gap-3 my-4">
+                <div class="flex-1 h-px bg-primary/20"></div>
+                <span class="font-mono text-[10px] text-gray-500 uppercase">or use email</span>
+                <div class="flex-1 h-px bg-primary/20"></div>
+            </div>
+
+            <!-- Email / Password Form -->
+            <form id="auth-form" class="space-y-3" novalidate>
+                <div id="auth-name-wrap" class="hidden">
+                    <label for="auth-name" class="font-mono text-[10px] text-gray-400 uppercase block mb-1">Full Name</label>
+                    <input type="text" id="auth-name" autocomplete="name" placeholder="Your full name"
+                        class="w-full bg-surface-container border border-primary/30 text-white px-3 py-2.5 font-sans text-sm focus:border-primary focus:outline-none"/>
+                </div>
+
+                <div>
+                    <label for="auth-email" class="font-mono text-[10px] text-gray-400 uppercase block mb-1">Email</label>
+                    <input type="email" id="auth-email" autocomplete="email" placeholder="you@example.com"
+                        class="w-full bg-surface-container border border-primary/30 text-white px-3 py-2.5 font-sans text-sm focus:border-primary focus:outline-none"/>
+                </div>
+
+                <div>
+                    <label for="auth-password" class="font-mono text-[10px] text-gray-400 uppercase block mb-1">Password</label>
+                    <input type="password" id="auth-password" autocomplete="current-password" placeholder="At least 6 characters"
+                        class="w-full bg-surface-container border border-primary/30 text-white px-3 py-2.5 font-sans text-sm focus:border-primary focus:outline-none"/>
+                </div>
+
+                <!-- Error / status message -->
+                <div id="auth-error" class="hidden font-sans text-xs text-red-400 bg-red-500/10 border border-red-500/30 px-3 py-2"></div>
+
+                <button type="submit" id="btn-auth-submit"
+                    class="w-full bg-primary text-on-primary py-3.5 font-mono font-extrabold text-sm uppercase tracking-wide hover:bg-primary-glow transition-all btn-chamfer disabled:opacity-50 disabled:cursor-not-allowed">
+                    [ LOG IN ]
+                </button>
+            </form>
+
+            <!-- Toggle login/signup -->
+            <div class="text-center mt-4 font-sans text-xs text-gray-400">
+                <span id="auth-toggle-text">New to DCS?</span>
+                <button id="btn-auth-toggle" class="text-primary font-bold hover:text-primary-glow underline ml-1">Create an account</button>
+            </div>
+
+            <p class="font-sans text-[10px] text-gray-500 text-center mt-4 leading-relaxed">
+                Your details are used only to manage your enrollment and course access.
+            </p>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ENROLLMENT FORM MODAL                        -->
+    <!-- ============================================ -->
+    <div id="enroll-modal" class="hidden fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto">
+        <div class="glass-panel border-2 border-primary max-w-lg w-full p-6 md:p-8 relative my-8">
+
+            <button id="btn-enroll-close" class="absolute top-4 right-4 text-gray-400 hover:text-primary font-mono text-sm">[X]</button>
+
+            <!-- STEP 1: Details form -->
+            <div id="enroll-step-form">
+                <div class="mb-6">
+                    <div class="font-mono text-[10px] text-primary uppercase tracking-wide mb-1">Step 1 of 2 // Your Details</div>
+                    <h3 class="font-mono text-lg font-extrabold text-white uppercase tracking-wide">ENROLLMENT FORM</h3>
+                    <p class="font-sans text-xs text-gray-400 mt-1">Fill this in and you'll move straight to payment.</p>
+                </div>
+
+                <form id="enroll-form" class="space-y-4" novalidate>
+                    <div>
+                        <label for="enroll-name" class="font-mono text-[10px] text-gray-400 uppercase block mb-1">Name <span class="text-primary">*</span></label>
+                        <input type="text" id="enroll-name" autocomplete="name" placeholder="Your full name"
+                            class="w-full bg-surface-container border border-primary/30 text-white px-3 py-2.5 font-sans text-sm focus:border-primary focus:outline-none"/>
+                    </div>
+
+                    <div>
+                        <label for="enroll-mobile" class="font-mono text-[10px] text-gray-400 uppercase block mb-1">Mobile Number <span class="text-primary">*</span></label>
+                        <div class="flex">
+                            <span class="bg-primary/10 border border-r-0 border-primary/30 text-primary-glow px-3 py-2.5 font-mono text-sm flex items-center whitespace-nowrap flex-shrink-0">+91</span>
+                            <input type="tel" id="enroll-mobile" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10-digit number"
+                                class="w-full bg-surface-container border border-primary/30 text-white px-3 py-2.5 font-sans text-sm focus:border-primary focus:outline-none"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="enroll-profession" class="font-mono text-[10px] text-gray-400 uppercase block mb-1">Profession <span class="text-primary">*</span></label>
+                        <select id="enroll-profession"
+                            class="w-full bg-surface-container border border-primary/30 text-white px-3 py-2.5 font-sans text-sm focus:border-primary focus:outline-none">
+                            <option value="">Select your profession</option>
+                            <option value="Student">Student</option>
+                            <option value="IT Professional">IT Professional</option>
+                            <option value="Non-IT Professional">Non-IT Professional</option>
+                            <option value="Fresher / Job Seeker">Fresher / Job Seeker</option>
+                            <option value="Business Owner">Business Owner</option>
+                            <option value="Government Employee">Government Employee</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="font-mono text-[10px] text-gray-400 uppercase block mb-2">Course — select one or more <span class="text-primary">*</span></label>
+                        <div class="space-y-2">
+                            <label class="flex items-start gap-3 bg-surface-container border border-primary/20 p-3 cursor-pointer hover:border-primary/50 transition-colors">
+                                <input type="checkbox" class="enroll-course mt-0.5 w-4 h-4 flex-shrink-0" style="accent-color:#10b981" value="Basic to Advance Level of Cyber Security" data-price="5999" data-course-id="c1"/>
+                                <span class="font-sans text-sm text-gray-200 leading-snug">
+                                    Basic to Advance Level of Cyber Security
+                                    <span class="block font-mono text-xs text-primary font-bold mt-0.5">₹5,999</span>
+                                </span>
+                            </label>
+                            <label class="flex items-start gap-3 bg-surface-container border border-primary/20 p-3 cursor-pointer hover:border-primary/50 transition-colors">
+                                <input type="checkbox" class="enroll-course mt-0.5 w-4 h-4 flex-shrink-0" style="accent-color:#10b981" value="AI with Cyber Security" data-price="4499" data-course-id="c2"/>
+                                <span class="font-sans text-sm text-gray-200 leading-snug">
+                                    AI with Cyber Security
+                                    <span class="block font-mono text-xs text-primary font-bold mt-0.5">₹4,499</span>
+                                </span>
+                            </label>
+                            <label class="flex items-start gap-3 bg-surface-container border border-primary/20 p-3 cursor-pointer hover:border-primary/50 transition-colors">
+                                <input type="checkbox" class="enroll-course mt-0.5 w-4 h-4 flex-shrink-0" style="accent-color:#10b981" value="SOC Analyst (Job Ready)" data-price="5999" data-course-id="c3"/>
+                                <span class="font-sans text-sm text-gray-200 leading-snug">
+                                    SOC Analyst (Job Ready)
+                                    <span class="block font-mono text-xs text-primary font-bold mt-0.5">₹5,999</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Running total -->
+                    <div class="flex items-center justify-between border-t border-primary/20 pt-3 font-mono">
+                        <span class="text-xs text-gray-400 uppercase">Total Payable</span>
+                        <span id="enroll-total" class="text-2xl font-extrabold text-primary">₹0</span>
+                    </div>
+
+                    <div id="enroll-error" class="hidden font-sans text-xs text-red-400 bg-red-500/10 border border-red-500/30 px-3 py-2"></div>
+
+                    <button type="submit" id="btn-enroll-submit"
+                        class="w-full bg-primary text-on-primary py-4 font-mono font-extrabold text-sm uppercase tracking-wide hover:bg-primary-glow transition-all btn-chamfer disabled:opacity-50 disabled:cursor-not-allowed">
+                        [ SUBMIT & PROCEED TO PAYMENT ]
+                    </button>
+                </form>
+            </div>
+
+            <!-- STEP 2: Payment handoff -->
+            <div id="enroll-step-pay" class="hidden text-center">
+                <div class="w-14 h-14 border-2 border-primary mx-auto mb-4 flex items-center justify-center">
+                    <i class="fa-solid fa-check text-primary text-2xl"></i>
+                </div>
+                <div class="font-mono text-[10px] text-primary uppercase tracking-wide mb-1">Step 2 of 2 // Payment</div>
+                <h3 class="font-mono text-lg font-extrabold text-white uppercase tracking-wide mb-2">DETAILS SAVED</h3>
+                <p class="font-sans text-sm text-gray-300 mb-1">Thanks <span id="pay-name" class="text-primary font-bold"></span> — your enrollment request is recorded.</p>
+                <p class="font-sans text-xs text-gray-400 mb-5">Reference: <span id="pay-ref" class="font-mono text-primary-glow"></span></p>
+
+                <div id="pay-save-status" class="hidden font-sans text-xs text-yellow-300 bg-yellow-500/10 border border-yellow-500/30 px-3 py-2 mb-4 text-left leading-relaxed"></div>
+
+                <div class="bg-surface-container border border-primary/30 p-4 mb-5 text-left font-mono text-xs space-y-2">
+                    <div class="flex justify-between text-gray-400"><span>COURSES</span><span id="pay-courses" class="text-white text-right ml-4"></span></div>
+                    <div class="flex justify-between border-t border-primary/20 pt-2"><span class="text-gray-400">AMOUNT DUE</span><span id="pay-amount" class="text-primary font-extrabold text-lg"></span></div>
+                </div>
+
+                <button id="btn-razorpay" class="w-full bg-primary text-on-primary py-4 font-mono font-extrabold text-sm uppercase tracking-wide hover:bg-primary-glow transition-all btn-chamfer">
+                    [ PAY NOW VIA RAZORPAY ]
+                </button>
+
+                <p id="razorpay-note" class="font-sans text-[11px] text-gray-500 mt-3 leading-relaxed"></p>
+
+                <button id="btn-enroll-done" class="font-mono text-xs text-gray-400 hover:text-primary underline mt-4">Close this window</button>
+            </div>
+        </div>
+    </div>
+
     <!-- JAVASCRIPT LOGIC ENGINE -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1416,8 +1614,15 @@
                         cart.push({ id, name, price });
                     }
                     updateCartUI();
-                    cartDrawer.classList.remove('hidden');
                     playSound(700, 'square', 0.1);
+
+                    // Route into the Firebase-gated enrollment flow (login -> form -> payment).
+                    // Falls back to the cart drawer if the auth module hasn't loaded yet.
+                    if (window.DCS && window.DCS.startEnrollment) {
+                        window.DCS.startEnrollment([id]);
+                    } else {
+                        cartDrawer.classList.remove('hidden');
+                    }
                 });
             });
 
@@ -1436,10 +1641,14 @@
                     return;
                 }
                 playSound(800, 'triangle', 0.15);
-                alert('CONGRATULATIONS! ENROLLMENT SUCCESSFUL. WELCOME TO DIVINE CYBER SOLUTION!');
-                cart = [];
-                updateCartUI();
                 cartDrawer.classList.add('hidden');
+
+                // Hand off to the enrollment flow with every cart course preselected.
+                if (window.DCS && window.DCS.startEnrollment) {
+                    window.DCS.startEnrollment(cart.map(c => c.id));
+                } else {
+                    alert('Enrollment is loading — please try again in a moment.');
+                }
             });
 
             // --- 6. Syllabus Inspection Modal ---
@@ -1658,6 +1867,374 @@
             }
 
         });
+    </script>
+
+    <!-- ============================================================ -->
+    <!-- FIREBASE AUTH + ENROLLMENT ENGINE                            -->
+    <!-- Loaded as an ES module from the gstatic CDN (no build step).  -->
+    <!-- ============================================================ -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        import {
+            getAuth, onAuthStateChanged, signOut,
+            createUserWithEmailAndPassword, signInWithEmailAndPassword,
+            GoogleAuthProvider, signInWithPopup, updateProfile
+        } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+        import {
+            getFirestore, collection, addDoc, serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+        // --- Firebase configuration (public client config — safe to ship) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFQ-MIY8KzEqSLvnWUnPC6b9JDk9qnXK8",
+            authDomain: "dcs-60b92.firebaseapp.com",
+            projectId: "dcs-60b92",
+            storageBucket: "dcs-60b92.firebasestorage.app",
+            messagingSenderId: "459358712536",
+            appId: "1:459358712536:web:6e44334d21ce9acc141dad",
+            measurementId: "G-B7BB45XNW4"
+        };
+
+        const app  = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db   = getFirestore(app);
+
+        // Analytics is optional and blocked by many ad blockers — never let it break the page.
+        import("https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js")
+            .then(m => { try { m.getAnalytics(app); } catch (_) {} })
+            .catch(() => {});
+
+        // ---------- Element handles ----------
+        const authModal    = document.getElementById('auth-modal');
+        const authForm     = document.getElementById('auth-form');
+        const authTitle    = document.getElementById('auth-title');
+        const authSubtitle = document.getElementById('auth-subtitle');
+        const authError    = document.getElementById('auth-error');
+        const authSubmit   = document.getElementById('btn-auth-submit');
+        const authNameWrap = document.getElementById('auth-name-wrap');
+        const authName     = document.getElementById('auth-name');
+        const authEmail    = document.getElementById('auth-email');
+        const authPassword = document.getElementById('auth-password');
+        const authToggle   = document.getElementById('btn-auth-toggle');
+        const authToggleTx = document.getElementById('auth-toggle-text');
+
+        const enrollModal  = document.getElementById('enroll-modal');
+        const enrollForm   = document.getElementById('enroll-form');
+        const enrollError  = document.getElementById('enroll-error');
+        const enrollSubmit = document.getElementById('btn-enroll-submit');
+        const enrollTotal  = document.getElementById('enroll-total');
+        const stepForm     = document.getElementById('enroll-step-form');
+        const stepPay      = document.getElementById('enroll-step-pay');
+
+        const accountBtn   = document.getElementById('btn-account');
+        const accountLabel = document.getElementById('account-label');
+        const accountIcon  = document.getElementById('account-icon');
+
+        const COURSE_BOXES = () => Array.from(document.querySelectorAll('.enroll-course'));
+
+        let isSignupMode  = false;
+        let pendingCourses = null;   // course ids to preselect once logged in
+        let currentUser    = null;
+
+        const inr = n => '₹' + n.toLocaleString('en-IN');
+
+        // ---------- Modal helpers ----------
+        function openModal(el)  { el.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeModal(el) { el.classList.add('hidden');    document.body.style.overflow = ''; }
+
+        function showError(box, msg) {
+            box.textContent = msg;
+            box.classList.remove('hidden');
+        }
+        function clearError(box) {
+            box.textContent = '';
+            box.classList.add('hidden');
+        }
+
+        // Turn Firebase's error codes into something a visitor can act on.
+        function friendlyAuthError(code) {
+            switch (code) {
+                case 'auth/invalid-email':            return 'That email address doesn’t look right.';
+                case 'auth/missing-password':          return 'Please enter your password.';
+                case 'auth/weak-password':             return 'Password must be at least 6 characters.';
+                case 'auth/email-already-in-use':      return 'An account with this email already exists — try logging in instead.';
+                case 'auth/invalid-credential':
+                case 'auth/wrong-password':
+                case 'auth/user-not-found':            return 'Email or password is incorrect.';
+                case 'auth/too-many-requests':         return 'Too many attempts. Please wait a minute and try again.';
+                case 'auth/popup-closed-by-user':
+                case 'auth/cancelled-popup-request':   return 'Google sign-in was closed before finishing.';
+                case 'auth/popup-blocked':             return 'Your browser blocked the popup. Allow popups and try again.';
+                case 'auth/unauthorized-domain':       return 'This domain isn’t authorised in Firebase yet. Add it under Authentication → Settings → Authorised domains.';
+                case 'auth/operation-not-allowed':     return 'This sign-in method isn’t enabled in Firebase yet. Enable it under Authentication → Sign-in method.';
+                case 'auth/network-request-failed':    return 'Network problem — check your connection and try again.';
+                default:                               return 'Could not sign you in. Please try again.';
+            }
+        }
+
+        // ---------- Login / signup mode switch ----------
+        function setAuthMode(signup) {
+            isSignupMode = signup;
+            clearError(authError);
+            authNameWrap.classList.toggle('hidden', !signup);
+            authTitle.textContent    = signup ? 'CREATE ACCOUNT' : 'SECURE ACCESS';
+            authSubtitle.textContent = signup ? 'Sign up to enroll in a course' : 'Log in to continue your enrollment';
+            authSubmit.textContent   = signup ? '[ CREATE ACCOUNT ]' : '[ LOG IN ]';
+            authToggleTx.textContent = signup ? 'Already have an account?' : 'New to DCS?';
+            authToggle.textContent   = signup ? 'Log in' : 'Create an account';
+            authPassword.setAttribute('autocomplete', signup ? 'new-password' : 'current-password');
+        }
+
+        authToggle.addEventListener('click', () => setAuthMode(!isSignupMode));
+        document.getElementById('btn-auth-close').addEventListener('click', () => {
+            closeModal(authModal);
+            pendingCourses = null;
+        });
+        authModal.addEventListener('click', e => {
+            if (e.target === authModal) { closeModal(authModal); pendingCourses = null; }
+        });
+
+        // ---------- Email + password ----------
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearError(authError);
+
+            const email = authEmail.value.trim();
+            const pass  = authPassword.value;
+            const name  = authName.value.trim();
+
+            if (!email)                   return showError(authError, 'Please enter your email address.');
+            if (!pass)                    return showError(authError, 'Please enter your password.');
+            if (isSignupMode && !name)    return showError(authError, 'Please enter your full name.');
+            if (isSignupMode && pass.length < 6) return showError(authError, 'Password must be at least 6 characters.');
+
+            authSubmit.disabled = true;
+            authSubmit.textContent = isSignupMode ? '[ CREATING... ]' : '[ LOGGING IN... ]';
+
+            try {
+                if (isSignupMode) {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    await updateProfile(cred.user, { displayName: name });
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                }
+                // onAuthStateChanged takes over from here.
+            } catch (err) {
+                showError(authError, friendlyAuthError(err.code));
+            } finally {
+                // Only restore the button — calling setAuthMode() here would
+                // wipe the error message we just showed.
+                authSubmit.disabled = false;
+                authSubmit.textContent = isSignupMode ? '[ CREATE ACCOUNT ]' : '[ LOG IN ]';
+            }
+        });
+
+        // ---------- Google sign-in ----------
+        const googleProvider = new GoogleAuthProvider();
+        googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+        document.getElementById('btn-google-signin').addEventListener('click', async () => {
+            clearError(authError);
+            try {
+                await signInWithPopup(auth, googleProvider);
+            } catch (err) {
+                showError(authError, friendlyAuthError(err.code));
+            }
+        });
+
+        // ---------- Auth state ----------
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+
+            if (user) {
+                const short = (user.displayName || user.email || 'ACCOUNT').split(' ')[0].split('@')[0];
+                accountLabel.textContent = short.toUpperCase().slice(0, 10);
+                accountIcon.className    = 'fa-solid fa-user-check text-sm';
+                accountBtn.title         = 'Signed in as ' + (user.email || short) + ' — click to sign out';
+
+                // Close the login box and continue whatever the visitor was doing.
+                if (!authModal.classList.contains('hidden')) {
+                    closeModal(authModal);
+                    authForm.reset();
+                }
+                if (pendingCourses) {
+                    const ids = pendingCourses;
+                    pendingCourses = null;
+                    openEnrollForm(ids);
+                }
+            } else {
+                accountLabel.textContent = 'LOG IN';
+                accountIcon.className    = 'fa-solid fa-right-to-bracket text-sm';
+                accountBtn.title         = 'Log in or create an account';
+            }
+        });
+
+        accountBtn.addEventListener('click', async () => {
+            if (currentUser) {
+                if (confirm('Sign out of your DCS account?')) await signOut(auth);
+            } else {
+                setAuthMode(false);
+                clearError(authError);
+                openModal(authModal);
+            }
+        });
+
+        // ---------- Enrollment form ----------
+        function recalcTotal() {
+            const total = COURSE_BOXES()
+                .filter(b => b.checked)
+                .reduce((sum, b) => sum + parseInt(b.dataset.price), 0);
+            enrollTotal.textContent = inr(total);
+            return total;
+        }
+        COURSE_BOXES().forEach(b => b.addEventListener('change', () => {
+            clearError(enrollError);
+            recalcTotal();
+        }));
+
+        function openEnrollForm(courseIds) {
+            stepPay.classList.add('hidden');
+            stepForm.classList.remove('hidden');
+            clearError(enrollError);
+
+            // Preselect whichever course(s) the visitor clicked.
+            COURSE_BOXES().forEach(b => {
+                b.checked = Array.isArray(courseIds) && courseIds.includes(b.dataset.courseId);
+            });
+            recalcTotal();
+
+            // Prefill from the signed-in account so there's less to type.
+            if (currentUser) {
+                const nameField = document.getElementById('enroll-name');
+                if (!nameField.value && currentUser.displayName) nameField.value = currentUser.displayName;
+            }
+
+            openModal(enrollModal);
+        }
+
+        // Digits only in the mobile field.
+        document.getElementById('enroll-mobile').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        enrollForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearError(enrollError);
+
+            const name       = document.getElementById('enroll-name').value.trim();
+            const mobile     = document.getElementById('enroll-mobile').value.trim();
+            const profession = document.getElementById('enroll-profession').value;
+            const chosen     = COURSE_BOXES().filter(b => b.checked);
+
+            if (!name)                  return showError(enrollError, 'Please enter your name.');
+            if (mobile.length !== 10)   return showError(enrollError, 'Please enter a valid 10-digit mobile number.');
+            if (!/^[6-9]/.test(mobile)) return showError(enrollError, 'Indian mobile numbers start with 6, 7, 8 or 9.');
+            if (!profession)            return showError(enrollError, 'Please select your profession.');
+            if (chosen.length === 0)    return showError(enrollError, 'Please select at least one course.');
+
+            const courses = chosen.map(b => b.value);
+            const amount  = chosen.reduce((s, b) => s + parseInt(b.dataset.price), 0);
+
+            enrollSubmit.disabled = true;
+            enrollSubmit.textContent = '[ SAVING... ]';
+
+            const ref = 'DCS-' + mobile.slice(-4) + '-' + String(amount);
+
+            // Firestore queues writes offline and retries silently, so a project with
+            // Firestore not yet enabled would leave this button spinning forever.
+            // Race it against a timeout so the visitor always reaches the payment step.
+            const withTimeout = (promise, ms) => Promise.race([
+                promise,
+                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+            ]);
+
+            let saved = false;
+            try {
+                await withTimeout(addDoc(collection(db, 'enrollments'), {
+                    name, mobile: '+91' + mobile, profession, courses, amount,
+                    reference: ref,
+                    paymentStatus: 'pending',
+                    uid: currentUser ? currentUser.uid : null,
+                    email: currentUser ? currentUser.email : null,
+                    createdAt: serverTimestamp()
+                }), 8000);
+                saved = true;
+            } catch (err) {
+                // Never trap the visitor — log it and carry on to payment.
+                console.error('Enrollment save did not confirm:', err);
+            } finally {
+                enrollSubmit.disabled = false;
+                enrollSubmit.textContent = '[ SUBMIT & PROCEED TO PAYMENT ]';
+            }
+
+            // Move to the payment step.
+            document.getElementById('pay-name').textContent    = name.split(' ')[0];
+            document.getElementById('pay-ref').textContent     = ref;
+            document.getElementById('pay-courses').textContent  = courses.join(', ');
+            document.getElementById('pay-amount').textContent   = inr(amount);
+
+            const saveStatus = document.getElementById('pay-save-status');
+            if (saved) {
+                saveStatus.textContent = '';
+                saveStatus.classList.add('hidden');
+            } else {
+                saveStatus.textContent = 'Note: we couldn’t confirm your details saved to our system. ' +
+                    'Please WhatsApp us your reference number so your seat is secured.';
+                saveStatus.classList.remove('hidden');
+            }
+
+            stepForm.classList.add('hidden');
+            stepPay.classList.remove('hidden');
+            enrollModal.scrollTop = 0;
+        });
+
+        // ---------- Razorpay handoff (keys not configured yet) ----------
+        const RAZORPAY_KEY_ID = '';   // <-- paste your Razorpay Key ID here when ready
+
+        const razorpayNote = document.getElementById('razorpay-note');
+        if (!RAZORPAY_KEY_ID) {
+            razorpayNote.textContent = 'Razorpay isn’t connected yet — this button will open the payment window once the key is added.';
+        }
+
+        document.getElementById('btn-razorpay').addEventListener('click', () => {
+            if (!RAZORPAY_KEY_ID) {
+                alert(
+                    'Razorpay is not connected yet.\n\n' +
+                    'Your details have been saved. To complete payment now, contact DCS on WhatsApp ' +
+                    'and quote your reference number.'
+                );
+                return;
+            }
+            // Once RAZORPAY_KEY_ID is set, the Razorpay checkout opens here.
+        });
+
+        document.getElementById('btn-enroll-close').addEventListener('click', () => closeModal(enrollModal));
+        document.getElementById('btn-enroll-done').addEventListener('click',  () => closeModal(enrollModal));
+        enrollModal.addEventListener('click', e => { if (e.target === enrollModal) closeModal(enrollModal); });
+
+        // Escape closes whichever modal is open.
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            if (!authModal.classList.contains('hidden'))   { closeModal(authModal); pendingCourses = null; }
+            if (!enrollModal.classList.contains('hidden')) closeModal(enrollModal);
+        });
+
+        // ---------- Bridge for the main (non-module) script ----------
+        window.DCS = {
+            startEnrollment(courseIds) {
+                if (currentUser) {
+                    openEnrollForm(courseIds);
+                } else {
+                    // Remember the intent, ask them to log in, then resume automatically.
+                    pendingCourses = courseIds;
+                    setAuthMode(false);
+                    authSubtitle.textContent = 'Log in or sign up to enroll in this course';
+                    clearError(authError);
+                    openModal(authModal);
+                }
+            },
+            isLoggedIn: () => !!currentUser
+        };
     </script>
 </body>
 </html>
