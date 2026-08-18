@@ -4,12 +4,15 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ---------------------------------------------------------------------
-    // ADMIN ALLOWLIST  <-- put the admin email address here
+    // ADMIN ALLOWLIST
     // ---------------------------------------------------------------------
     // This function is the REAL lock on student data. The ADMIN button in
     // index.html only hides itself from non-admins, and anyone can unhide a
     // button with browser devtools. If an email is not listed here, Firestore
     // refuses to hand over the data no matter what the browser asks for.
+    //
+    // Editing this file changes nothing until it is published in the Firebase
+    // console: Firestore → Rules → Publish.
     //
     // Keep this list identical to ADMIN_EMAILS in index.html. Lowercase only.
     //
@@ -22,7 +25,7 @@ service cloud.firestore {
       return request.auth != null
              && request.auth.token.get('email_verified', false) == true
              && request.auth.token.get('email', '').lower() in [
-                  'REPLACE_WITH_ADMIN_EMAIL@example.com'
+                  'checkship66@gmail.com'
                 ];
     }
 

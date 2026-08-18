@@ -17,9 +17,10 @@ Single-page static site. No build step.
 
 Registrations are viewable in-page: an allowlisted account sees an **ADMIN**
 button in the header, opening a searchable table with Excel and PDF export.
-The address must be listed in both `ADMIN_EMAILS` (index.html) and `isAdmin()`
-(firestore.rules) — see `FIREBASE-SETUP.md` section 6. Only the rules are
-security; the button is just convenience.
+The admin is `checkship66@gmail.com`, listed in both `ADMIN_EMAILS`
+(index.html) and `isAdmin()` (firestore.rules) — see `FIREBASE-SETUP.md`
+section 6. Only the rules are security; the button is just convenience, and
+the rules must be published in the Firebase console to take effect.
 
 ## Local preview
 

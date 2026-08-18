@@ -1998,16 +1998,16 @@
         };
 
         // ==================================================================
-        // ADMIN ACCESS  <-- PUT THE ADMIN EMAIL ADDRESS HERE (lowercase)
+        // ADMIN ACCESS
         // ==================================================================
-        // Then put the SAME address in the isAdmin() list inside
-        // firestore.rules and publish those rules in the Firebase console.
-        // Both are required, and they do different jobs:
+        // The SAME addresses must be in the isAdmin() list inside
+        // firestore.rules, published in the Firebase console. Both are
+        // required, and they do different jobs:
         //   - this list decides whether the ADMIN button is visible
         //   - firestore.rules decides whether Firestore releases the data
-        // Only the second one is security. Leaving this list empty is safe.
+        // Only the second one is security.
         const ADMIN_EMAILS = [
-            // 'admin@divinecybersolution.com',
+            'checkship66@gmail.com',
         ];
 
         const adminEmailMatches = u =>
