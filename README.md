@@ -20,4 +20,11 @@ Then open http://localhost:8000
 
 ## Deployment
 
-Deployed on Vercel as a static site. Pushes to `main` deploy automatically.
+Deployed on [Render](https://render.com) as a static site, configured by
+`render.yaml`. Pushes to `main` deploy automatically.
+
+Live: https://dcs-website.onrender.com
+
+Adding a new domain also needs it added to Firebase → Authentication →
+Settings → Authorised domains, or Google sign-in fails there. See
+`FIREBASE-SETUP.md`.

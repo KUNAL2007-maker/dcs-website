@@ -26,17 +26,19 @@ Project: **dcs-60b92**
 
 ## 3. Authorise your live domains
 
-Without this, Google sign-in fails on the Vercel site with
+Without this, Google sign-in fails on the live site with
 `auth/unauthorized-domain`.
 
 1. Go to **Authentication → Settings → Authorised domains**
    https://console.firebase.google.com/project/dcs-60b92/authentication/settings
-2. Click **Add domain** and add each of these:
-   - `dcs-website-eight.vercel.app`
-   - `dcs-website-kunal2007-makers-projects.vercel.app`
+2. Click **Add domain** and add:
+   - `dcs-website.onrender.com`  ← the live Render site
    - any custom domain you add later (e.g. `divinecybersolution.com`)
 
 `localhost` is already allowed, which is why local testing works.
+
+The two old `*.vercel.app` entries can be removed once Vercel is deleted —
+they do no harm, but they're dead weight.
 
 ## 4. Create the Firestore database
 
