@@ -9,6 +9,17 @@ Single-page static site. No build step.
 - `index.html` — the entire site (HTML, Tailwind via CDN, inline JS)
 - `dcs-logo.jpeg` — brand logo
 - `Jayraj.jpeg` — instructor photo
+- `firestore.rules` — Firestore security rules, including the admin allowlist
+- `FIREBASE-SETUP.md` — the Firebase console steps and admin setup
+- `render.yaml` — Render blueprint
+
+## Admin console
+
+Registrations are viewable in-page: an allowlisted account sees an **ADMIN**
+button in the header, opening a searchable table with Excel and PDF export.
+The address must be listed in both `ADMIN_EMAILS` (index.html) and `isAdmin()`
+(firestore.rules) — see `FIREBASE-SETUP.md` section 6. Only the rules are
+security; the button is just convenience.
 
 ## Local preview
 

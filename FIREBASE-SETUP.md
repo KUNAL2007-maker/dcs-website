@@ -82,6 +82,86 @@ Firestore → **Data** tab → `enrollments` collection. Each document holds:
 
 ---
 
+## 6. Turn on the ADMIN tab
+
+The admin view is built into the same page — there is no separate admin site.
+When an authorised account logs in, an **ADMIN** button appears in the header
+next to LOG IN. It opens a table of every registration, with search and
+**EXCEL** / **PDF** download buttons.
+
+The admin address has to go in **two** places. They do different jobs and both
+are needed:
+
+### a) `index.html` — makes the button appear
+
+Near the top of the `<script type="module">` block, find:
+
+```js
+const ADMIN_EMAILS = [
+    // 'admin@divinecybersolution.com',
+];
+```
+
+Put the address in, lowercase, uncommented:
+
+```js
+const ADMIN_EMAILS = [
+    'youradmin@gmail.com',
+];
+```
+
+More than one admin is fine — one quoted address per line, comma separated.
+
+### b) `firestore.rules` — actually releases the data
+
+Find the `isAdmin()` function and replace the placeholder with the same
+address:
+
+```
+&& request.auth.token.get('email', '').lower() in [
+     'youradmin@gmail.com'
+   ];
+```
+
+Then paste the whole file into Firebase → Firestore → **Rules** → **Publish**.
+
+**Only step (b) is security.** Step (a) just shows a button, and anyone can
+unhide a button with browser devtools. The rules are what make Firestore
+refuse. If you do (a) and skip (b), the admin sees a clear red error saying
+the rules still need publishing.
+
+### The admin must sign in with Google
+
+Firebase does not check that you own an address when you register it with a
+password, so the rules require a **verified** email. Google sign-in verifies
+automatically; email/password does not.
+
+So: log in with **Continue with Google** using the admin address. If you use
+email/password instead, the console opens but explains that the address is
+unverified and shows no data.
+
+### What the admin can and cannot do
+
+- Read every registration, search it, export it — yes.
+- Edit or delete a registration from the browser — no. `update` and `delete`
+  are blocked for everyone, admin included. Do those in the Firebase console.
+
+### The exports
+
+| | |
+|---|---|
+| **EXCEL** | A real `.xlsx` with a filter row and sized columns. If an ad blocker blocks the spreadsheet library, it falls back to `.csv`, which opens in Excel just the same, and says so. |
+| **PDF** | Landscape A4 table with a heading, total value and page numbers. If the library is blocked it tells you to use Ctrl+P → Save as PDF. |
+
+Both files are named `DCS-Registrations-YYYY-MM-DD`, and both contain **only
+the rows currently matching the search box** — so you can send a client just
+one course's registrations by searching for it first.
+
+Amounts are plain numbers under an "Amount (INR)" heading rather than a ₹
+column, because the PDF font has no rupee glyph and would print a blank box.
+
+---
+
 ## Razorpay (later)
 
 In `index.html`, find:
@@ -108,3 +188,5 @@ that step when you have your Razorpay account.
 4. Fill it in and submit. You should land on the payment step with **no**
    yellow warning — that means Firestore saved it.
 5. Check Firestore → Data → `enrollments` for the new document.
+6. Log in as the admin address and confirm the **ADMIN** button appears,
+   the registration from step 4 is listed, and both EXCEL and PDF download.

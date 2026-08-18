@@ -3,17 +3,40 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ---------------------------------------------------------------------
+    // ADMIN ALLOWLIST  <-- put the admin email address here
+    // ---------------------------------------------------------------------
+    // This function is the REAL lock on student data. The ADMIN button in
+    // index.html only hides itself from non-admins, and anyone can unhide a
+    // button with browser devtools. If an email is not listed here, Firestore
+    // refuses to hand over the data no matter what the browser asks for.
+    //
+    // Keep this list identical to ADMIN_EMAILS in index.html. Lowercase only.
+    //
+    // Why email_verified is required: Firebase does not check that you own an
+    // address when you sign up with email/password. Without this check,
+    // anyone who guessed the admin address could register it themselves and
+    // read every student's name and phone number. Signing in with Google
+    // sets email_verified to true automatically.
+    function isAdmin() {
+      return request.auth != null
+             && request.auth.token.get('email_verified', false) == true
+             && request.auth.token.get('email', '').lower() in [
+                  'REPLACE_WITH_ADMIN_EMAIL@example.com'
+                ];
+    }
+
     match /enrollments/{docId} {
       // A signed-in visitor may create an enrollment tied to their own account.
       allow create: if request.auth != null
                     && request.resource.data.uid == request.auth.uid;
 
-      // They may read back only their own enrollments.
-      allow read: if request.auth != null
-                  && resource.data.uid == request.auth.uid;
+      // Admins read every enrollment. Everyone else reads only their own.
+      allow read: if isAdmin()
+                  || (request.auth != null && resource.data.uid == request.auth.uid);
 
-      // Nobody edits or deletes from the browser. Manage these in the
-      // Firebase console or from a server using the Admin SDK.
+      // Nobody edits or deletes from the browser — not even an admin. Manage
+      // these in the Firebase console or from a server using the Admin SDK.
       allow update, delete: if false;
     }
 

@@ -403,6 +403,14 @@
 
             <!-- Action Controls -->
             <div class="flex items-center gap-2 flex-shrink-0">
+                <!-- Admin console — revealed only for allowlisted accounts.
+                     Hiding this is convenience, not security: Firestore rules
+                     are what actually refuse the data. -->
+                <button id="btn-admin" class="hidden font-mono text-xs bg-accent-gold/10 border border-accent-gold/40 text-accent-gold px-3 py-2 hover:bg-accent-gold hover:text-black transition-all flex items-center gap-2 font-bold whitespace-nowrap">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                    <span class="hidden sm:inline">ADMIN</span>
+                </button>
+
                 <!-- Account / Login (Firebase Auth) -->
                 <button id="btn-account" class="font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-3 py-2 hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2 font-bold whitespace-nowrap">
                     <i id="account-icon" class="fa-solid fa-right-to-bracket text-sm"></i>
@@ -1462,6 +1470,100 @@
         </div>
     </div>
 
+    <!-- ============================================================
+         ADMIN CONSOLE — all course registrations, with PDF/Excel export.
+         Same page, no separate admin site. Opens only from the ADMIN button.
+         ============================================================ -->
+    <div id="admin-modal" class="hidden fixed inset-0 z-[80] bg-black/90 backdrop-blur-sm flex items-start justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="glass-panel w-full max-w-7xl my-2 sm:my-4 border border-accent-gold/30">
+
+            <!-- Header -->
+            <div class="flex items-start justify-between gap-4 p-4 sm:p-6 border-b border-accent-gold/20">
+                <div>
+                    <h3 class="font-mono text-base sm:text-xl font-bold text-accent-gold flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> ADMIN &mdash; REGISTRATIONS
+                    </h3>
+                    <p id="admin-subtitle" class="font-sans text-xs text-gray-400 mt-1">Loading&hellip;</p>
+                </div>
+                <button id="btn-admin-close" class="text-gray-400 hover:text-white text-2xl leading-none p-1 flex-shrink-0" title="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="p-4 sm:p-6 pb-3 sm:pb-4 flex flex-wrap items-center gap-2 sm:gap-3">
+                <div class="relative flex-1 min-w-[180px]">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+                    <input id="admin-search" type="text" autocomplete="off"
+                           placeholder="Search name, mobile, email, course&hellip;"
+                           class="w-full bg-surface-dim border border-primary/30 text-white font-sans text-sm pl-9 pr-3 py-2.5 focus:border-primary focus:outline-none placeholder-gray-500"/>
+                </div>
+                <button id="btn-admin-refresh" class="font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-3 py-2.5 hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2 font-bold whitespace-nowrap">
+                    <i class="fa-solid fa-rotate text-sm"></i> REFRESH
+                </button>
+                <button id="btn-admin-excel" class="font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-3 py-2.5 hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2 font-bold whitespace-nowrap">
+                    <i class="fa-solid fa-file-excel text-sm"></i> EXCEL
+                </button>
+                <button id="btn-admin-pdf" class="font-mono text-xs bg-accent-gold/10 border border-accent-gold/40 text-accent-gold px-3 py-2.5 hover:bg-accent-gold hover:text-black transition-all flex items-center gap-2 font-bold whitespace-nowrap">
+                    <i class="fa-solid fa-file-pdf text-sm"></i> PDF
+                </button>
+            </div>
+
+            <!-- Totals strip -->
+            <div class="px-4 sm:px-6 pb-4 sm:pb-5 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+                <div class="bg-surface-dim border border-primary/20 px-3 py-2.5">
+                    <div class="font-mono text-[10px] text-gray-500 tracking-wider">REGISTRATIONS</div>
+                    <div id="admin-stat-count" class="font-mono text-lg font-bold text-white">&mdash;</div>
+                </div>
+                <div class="bg-surface-dim border border-primary/20 px-3 py-2.5">
+                    <div class="font-mono text-[10px] text-gray-500 tracking-wider">TOTAL VALUE</div>
+                    <div id="admin-stat-value" class="font-mono text-lg font-bold text-primary-glow">&mdash;</div>
+                </div>
+                <div class="bg-surface-dim border border-primary/20 px-3 py-2.5">
+                    <div class="font-mono text-[10px] text-gray-500 tracking-wider">PAID</div>
+                    <div id="admin-stat-paid" class="font-mono text-lg font-bold text-white">&mdash;</div>
+                </div>
+                <div class="bg-surface-dim border border-primary/20 px-3 py-2.5">
+                    <div class="font-mono text-[10px] text-gray-500 tracking-wider">PAYMENT PENDING</div>
+                    <div id="admin-stat-pending" class="font-mono text-lg font-bold text-yellow-300">&mdash;</div>
+                </div>
+            </div>
+
+            <!-- Status / error banner -->
+            <div id="admin-status" class="hidden mx-4 sm:mx-6 mb-4 font-sans text-xs px-3 py-2.5 leading-relaxed"></div>
+
+            <!-- Table. min-w-full (not w-full) lets the table take its natural
+                 width and the wrapper scroll, instead of squeezing names and
+                 emails into one-character-per-line columns on narrow screens. -->
+            <div class="overflow-x-auto border-t border-primary/10">
+                <table class="min-w-full border-collapse text-left">
+                    <thead class="bg-surface-dim">
+                        <tr class="font-mono text-[10px] text-gray-400 tracking-wider">
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">#</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">DATE</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">NAME</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">MOBILE</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">EMAIL</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">PROFESSION</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">COURSES</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap text-right">AMOUNT</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">REFERENCE</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">PAYMENT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-tbody" class="font-sans text-xs text-gray-300"></tbody>
+                </table>
+            </div>
+
+            <div class="p-4 sm:p-6 border-t border-primary/10 flex items-center justify-between gap-4 flex-wrap">
+                <p class="font-sans text-[11px] text-gray-500 leading-relaxed">
+                    Exports include only the rows currently matching your search.
+                </p>
+                <button id="btn-admin-done" class="font-mono text-xs text-gray-400 hover:text-primary underline">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- JAVASCRIPT LOGIC ENGINE -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1881,7 +1983,7 @@
             GoogleAuthProvider, signInWithPopup, updateProfile
         } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
         import {
-            getFirestore, collection, addDoc, serverTimestamp
+            getFirestore, collection, addDoc, getDocs, serverTimestamp
         } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
         // --- Firebase configuration (public client config — safe to ship) ---
@@ -1894,6 +1996,22 @@
             appId: "1:459358712536:web:6e44334d21ce9acc141dad",
             measurementId: "G-B7BB45XNW4"
         };
+
+        // ==================================================================
+        // ADMIN ACCESS  <-- PUT THE ADMIN EMAIL ADDRESS HERE (lowercase)
+        // ==================================================================
+        // Then put the SAME address in the isAdmin() list inside
+        // firestore.rules and publish those rules in the Firebase console.
+        // Both are required, and they do different jobs:
+        //   - this list decides whether the ADMIN button is visible
+        //   - firestore.rules decides whether Firestore releases the data
+        // Only the second one is security. Leaving this list empty is safe.
+        const ADMIN_EMAILS = [
+            // 'admin@divinecybersolution.com',
+        ];
+
+        const adminEmailMatches = u =>
+            !!(u && u.email && ADMIN_EMAILS.includes(u.email.toLowerCase()));
 
         const app  = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -1930,6 +2048,13 @@
         const accountLabel = document.getElementById('account-label');
         const accountIcon  = document.getElementById('account-icon');
 
+        const adminBtn      = document.getElementById('btn-admin');
+        const adminModal    = document.getElementById('admin-modal');
+        const adminSubtitle = document.getElementById('admin-subtitle');
+        const adminStatus   = document.getElementById('admin-status');
+        const adminTbody    = document.getElementById('admin-tbody');
+        const adminSearch   = document.getElementById('admin-search');
+
         const COURSE_BOXES = () => Array.from(document.querySelectorAll('.enroll-course'));
 
         let isSignupMode  = false;
@@ -1937,6 +2062,13 @@
         let currentUser    = null;
 
         const inr = n => '₹' + n.toLocaleString('en-IN');
+
+        // Firestore queues writes offline and retries silently instead of
+        // rejecting, so any call that could hang needs a deadline.
+        const withTimeout = (promise, ms) => Promise.race([
+            promise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+        ]);
 
         // ---------- Modal helpers ----------
         function openModal(el)  { el.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
@@ -2062,10 +2194,19 @@
                     pendingCourses = null;
                     openEnrollForm(ids);
                 }
+
+                // Reveal the ADMIN button for allowlisted accounts. An unverified
+                // address still gets the button — the console then explains why
+                // Firestore will refuse, which beats a silently missing button.
+                adminBtn.classList.toggle('hidden', !adminEmailMatches(user));
             } else {
                 accountLabel.textContent = 'LOG IN';
                 accountIcon.className    = 'fa-solid fa-right-to-bracket text-sm';
                 accountBtn.title         = 'Log in or create an account';
+
+                adminBtn.classList.add('hidden');
+                if (!adminModal.classList.contains('hidden')) closeModal(adminModal);
+                adminRows = [];
             }
         });
 
@@ -2140,14 +2281,9 @@
 
             const ref = 'DCS-' + mobile.slice(-4) + '-' + String(amount);
 
-            // Firestore queues writes offline and retries silently, so a project with
-            // Firestore not yet enabled would leave this button spinning forever.
-            // Race it against a timeout so the visitor always reaches the payment step.
-            const withTimeout = (promise, ms) => Promise.race([
-                promise,
-                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
-            ]);
-
+            // A project with Firestore not yet enabled would leave this button
+            // spinning forever, so race the write against a deadline and always
+            // let the visitor reach the payment step.
             let saved = false;
             try {
                 await withTimeout(addDoc(collection(db, 'enrollments'), {
@@ -2217,9 +2353,357 @@
             if (e.key !== 'Escape') return;
             if (!authModal.classList.contains('hidden'))   { closeModal(authModal); pendingCourses = null; }
             if (!enrollModal.classList.contains('hidden')) closeModal(enrollModal);
+            if (!adminModal.classList.contains('hidden'))  closeModal(adminModal);
         });
 
+        // ==================================================================
+        // ADMIN CONSOLE
+        // ==================================================================
+        // The allowlist itself lives next to firebaseConfig at the top of this
+        // script, so it's easy to find.
+
+        // Students type their own name and profession, and those strings end up
+        // in innerHTML below. A name like "<img onerror=...>" would otherwise
+        // execute in the admin's browser — the one session most worth guarding.
+        const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+        const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ESC_MAP[c]);
+
+        let adminRows = [];   // every enrollment, newest first
+
+        function toDate(ts) {
+            if (!ts) return null;
+            if (typeof ts.toDate === 'function') return ts.toDate();
+            const d = new Date(ts);
+            return isNaN(d.getTime()) ? null : d;
+        }
+
+        function fmtDate(ts) {
+            const d = toDate(ts);
+            if (!d) return '—';
+            return d.toLocaleString('en-IN', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        const courseList = r =>
+            Array.isArray(r.courses) ? r.courses : (r.courses ? [r.courses] : []);
+
+        // Newest first, with undated rows last rather than dropped.
+        const sortByNewest = rows => rows.slice().sort((a, b) => {
+            const da = toDate(a.createdAt), dbt = toDate(b.createdAt);
+            if (da && dbt) return dbt - da;
+            if (da) return -1;
+            if (dbt) return 1;
+            return 0;
+        });
+
+        function adminBanner(html, tone) {
+            const tones = {
+                error: 'text-red-300 bg-red-500/10 border border-red-500/30',
+                warn:  'text-yellow-300 bg-yellow-500/10 border border-yellow-500/30',
+                info:  'text-gray-300 bg-primary/5 border border-primary/20'
+            };
+            adminStatus.className = 'font-sans text-xs px-3 py-2.5 leading-relaxed mx-4 sm:mx-6 mb-4 ' +
+                                    (tones[tone] || tones.info);
+            adminStatus.innerHTML = html;
+        }
+        const hideAdminBanner = () => adminStatus.classList.add('hidden');
+
+        const STAT_IDS = ['admin-stat-count', 'admin-stat-value', 'admin-stat-paid', 'admin-stat-pending'];
+        const resetAdminStats = () =>
+            STAT_IDS.forEach(id => { document.getElementById(id).textContent = '—'; });
+
+        const tableMessage = msg =>
+            `<tr><td colspan="10" class="px-3 py-10 text-center text-gray-500 font-mono text-xs">${msg}</td></tr>`;
+
+        function filteredRows() {
+            const q = adminSearch.value.trim().toLowerCase();
+            if (!q) return adminRows;
+            return adminRows.filter(r => [
+                r.name, r.mobile, r.email, r.profession,
+                r.reference, r.paymentStatus, courseList(r).join(' ')
+            ].join(' ').toLowerCase().includes(q));
+        }
+
+        function renderAdminTable() {
+            const rows  = filteredRows();
+            const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+            const paid  = rows.filter(r => String(r.paymentStatus).toLowerCase() === 'paid').length;
+
+            document.getElementById('admin-stat-count').textContent   = rows.length;
+            document.getElementById('admin-stat-value').textContent   = inr(total);
+            document.getElementById('admin-stat-paid').textContent    = paid;
+            document.getElementById('admin-stat-pending').textContent = rows.length - paid;
+
+            adminSubtitle.textContent = rows.length === adminRows.length
+                ? adminRows.length + ' registration' + (adminRows.length === 1 ? '' : 's')
+                : 'Showing ' + rows.length + ' of ' + adminRows.length + ' registrations';
+
+            if (!rows.length) {
+                adminTbody.innerHTML = tableMessage(
+                    adminRows.length ? 'No registration matches that search.' : 'No registrations yet.'
+                );
+                return;
+            }
+
+            adminTbody.innerHTML = rows.map((r, i) => {
+                const isPaid = String(r.paymentStatus).toLowerCase() === 'paid';
+                return `<tr class="border-t border-primary/10 hover:bg-primary/5 align-top">
+                    <td class="px-3 py-2.5 font-mono text-gray-500">${i + 1}</td>
+                    <td class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(fmtDate(r.createdAt))}</td>
+                    <td class="px-3 py-2.5 text-white font-semibold whitespace-nowrap">${esc(r.name)}</td>
+                    <td class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(r.mobile)}</td>
+                    <td class="px-3 py-2.5 text-[11px] whitespace-nowrap">${esc(r.email)}</td>
+                    <td class="px-3 py-2.5 whitespace-nowrap">${esc(r.profession)}</td>
+                    <td class="px-3 py-2.5">${courseList(r).map(c => `<div class="whitespace-nowrap">&bull; ${esc(c)}</div>`).join('')}</td>
+                    <td class="px-3 py-2.5 text-right font-mono text-primary-glow whitespace-nowrap">${esc(inr(Number(r.amount) || 0))}</td>
+                    <td class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(r.reference)}</td>
+                    <td class="px-3 py-2.5 whitespace-nowrap">
+                        <span class="font-mono text-[10px] px-2 py-1 ${isPaid ? 'bg-primary/20 text-primary-glow' : 'bg-yellow-500/15 text-yellow-300'}">
+                            ${esc(String(r.paymentStatus || 'pending').toUpperCase())}
+                        </span>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function loadEnrollments() {
+            hideAdminBanner();
+            adminSubtitle.textContent = 'Loading registrations…';
+            adminTbody.innerHTML = tableMessage('<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Fetching from Firestore…');
+
+            // Mirrors the email_verified check in firestore.rules, so the reason
+            // is explained here instead of surfacing as a bare permission error.
+            if (currentUser && !currentUser.emailVerified) {
+                resetAdminStats();
+                adminSubtitle.textContent = 'Access blocked';
+                adminTbody.innerHTML = tableMessage('—');
+                adminBanner(
+                    '<b>This address is not verified.</b> Admin access requires a verified email. ' +
+                    'Sign out, then use <b>Continue with Google</b> with the same address — Google verifies it automatically.',
+                    'warn'
+                );
+                return;
+            }
+
+            try {
+                // Fetched unsorted and ordered here on purpose: an orderBy query
+                // silently omits any document missing the sort field, which would
+                // hide real registrations. Sorting in JS cannot lose a row.
+                const snap = await withTimeout(getDocs(collection(db, 'enrollments')), 15000);
+                adminRows = sortByNewest(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                renderAdminTable();
+            } catch (err) {
+                console.error('Admin load failed:', err);
+                adminRows = [];
+                resetAdminStats();
+                adminSubtitle.textContent = 'Could not load registrations';
+                adminTbody.innerHTML = tableMessage('—');
+
+                if (err.code === 'permission-denied') {
+                    adminBanner(
+                        '<b>Firestore refused the request.</b> This address is allowed in the page but not in the ' +
+                        'security rules. Open Firebase &rarr; Firestore &rarr; Rules, paste in <code>firestore.rules</code> ' +
+                        'from the repo with this email in the <code>isAdmin()</code> list, and press Publish.',
+                        'error'
+                    );
+                } else if (err.message === 'timeout') {
+                    adminBanner('<b>Firestore did not respond.</b> Check the connection and press REFRESH.', 'error');
+                } else {
+                    adminBanner('<b>Could not load registrations.</b> ' + esc(err.message || String(err)), 'error');
+                }
+            }
+        }
+
+        // ---------- Export ----------
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                if (document.querySelector('script[data-ext="' + src + '"]')) return resolve();
+                const s = document.createElement('script');
+                s.src = src;
+                s.dataset.ext = src;
+                s.onload  = () => resolve();
+                s.onerror = () => reject(new Error('blocked: ' + src));
+                document.head.appendChild(s);
+            });
+        }
+
+        const exportName = ext => {
+            const d = new Date(), p = n => String(n).padStart(2, '0');
+            return 'DCS-Registrations-' + d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '.' + ext;
+        };
+
+        // "Amount (INR)" with plain numbers rather than a ₹ column: jsPDF's
+        // built-in fonts have no rupee glyph and would print a blank box.
+        const EXPORT_HEAD = ['#', 'Date', 'Name', 'Mobile', 'Email', 'Profession',
+                             'Courses', 'Amount (INR)', 'Reference', 'Payment'];
+
+        const exportMatrix = rows => rows.map((r, i) => [
+            i + 1,
+            fmtDate(r.createdAt),
+            r.name || '',
+            r.mobile || '',
+            r.email || '',
+            r.profession || '',
+            courseList(r).join('; '),
+            Number(r.amount) || 0,
+            r.reference || '',
+            String(r.paymentStatus || 'pending')
+        ]);
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function exportCsv(rows) {
+            // Excel executes a cell starting with = + - or @ as a formula, and
+            // students type these fields, so those need neutralising. But a naive
+            // check also mangles every "+91…" mobile number into "'+91…", so only
+            // treat + and - as dangerous when a non-digit follows: "+919812345678"
+            // stays intact while "+cmd|…" does not.
+            const RISKY = /^[=@\t\r]|^[+\-](?!\d)/;
+            const cell = v => {
+                let s = String(v ?? '');
+                if (RISKY.test(s)) s = "'" + s;
+                return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+            };
+            const lines = [EXPORT_HEAD.join(',')]
+                .concat(exportMatrix(rows).map(r => r.map(cell).join(',')));
+            // The BOM is what makes Excel read this as UTF-8 instead of mangling
+            // Indian names.
+            downloadBlob(
+                new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' }),
+                exportName('csv')
+            );
+        }
+
+        async function withExportButton(id, spinnerLabel, job) {
+            const rows = filteredRows();
+            if (!rows.length) { adminBanner('There is nothing to export yet.', 'warn'); return; }
+            const btn = document.getElementById(id);
+            const original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-sm"></i> ' + spinnerLabel;
+            try {
+                await job(rows);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = original;
+            }
+        }
+
+        const exportExcel = () => withExportButton('btn-admin-excel', 'EXCEL', async (rows) => {
+            try {
+                await loadScript('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js');
+                const XLSX = window.XLSX;
+                if (!XLSX) throw new Error('XLSX unavailable');
+
+                const ws = XLSX.utils.aoa_to_sheet([EXPORT_HEAD].concat(exportMatrix(rows)));
+                ws['!cols'] = [{ wch: 4 }, { wch: 20 }, { wch: 22 }, { wch: 15 }, { wch: 26 },
+                               { wch: 16 }, { wch: 42 }, { wch: 12 }, { wch: 16 }, { wch: 10 }];
+                ws['!autofilter'] = {
+                    ref: XLSX.utils.encode_range({
+                        s: { r: 0, c: 0 },
+                        e: { r: rows.length, c: EXPORT_HEAD.length - 1 }
+                    })
+                };
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Registrations');
+                XLSX.writeFile(wb, exportName('xlsx'));
+                hideAdminBanner();
+            } catch (err) {
+                console.warn('XLSX unavailable, falling back to CSV:', err);
+                exportCsv(rows);
+                adminBanner(
+                    'The Excel library was blocked, so a <b>CSV</b> was downloaded instead — ' +
+                    'it opens in Excel exactly the same way.',
+                    'warn'
+                );
+            }
+        });
+
+        const exportPdf = () => withExportButton('btn-admin-pdf', 'PDF', async (rows) => {
+            try {
+                await loadScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js');
+                await loadScript('https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js');
+                const JsPDF = window.jspdf && window.jspdf.jsPDF;
+                if (!JsPDF) throw new Error('jsPDF unavailable');
+
+                const doc   = new JsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+                const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+
+                doc.setFontSize(15);
+                doc.text('Divine Cyber Solution — Course Registrations', 40, 40);
+                doc.setFontSize(9);
+                doc.setTextColor(110);
+                doc.text(
+                    rows.length + ' registration' + (rows.length === 1 ? '' : 's') +
+                    '   |   Total value INR ' + total.toLocaleString('en-IN') +
+                    '   |   Generated ' + new Date().toLocaleString('en-IN'),
+                    40, 57
+                );
+
+                doc.autoTable({
+                    head: [EXPORT_HEAD],
+                    body: exportMatrix(rows).map(r => r.map(String)),
+                    startY: 72,
+                    styles: { fontSize: 7.5, cellPadding: 3, overflow: 'linebreak' },
+                    headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' },
+                    alternateRowStyles: { fillColor: [244, 247, 246] },
+                    columnStyles: {
+                        0: { cellWidth: 20 },
+                        1: { cellWidth: 76 },
+                        6: { cellWidth: 148 },
+                        7: { cellWidth: 54, halign: 'right' }
+                    },
+                    margin: { left: 40, right: 40 },
+                    didDrawPage: (data) => {
+                        doc.setFontSize(7.5);
+                        doc.setTextColor(140);
+                        doc.text(
+                            'Page ' + doc.internal.getNumberOfPages(),
+                            data.settings.margin.left,
+                            doc.internal.pageSize.getHeight() - 18
+                        );
+                    }
+                });
+
+                doc.save(exportName('pdf'));
+                hideAdminBanner();
+            } catch (err) {
+                console.warn('PDF export unavailable:', err);
+                adminBanner(
+                    '<b>The PDF library was blocked</b> (ad blocker, or no connection). ' +
+                    'Use EXCEL instead, or press Ctrl+P and choose “Save as PDF”.',
+                    'warn'
+                );
+            }
+        });
+
+        // ---------- Admin wiring ----------
+        adminBtn.addEventListener('click', () => {
+            adminSearch.value = '';
+            openModal(adminModal);
+            loadEnrollments();
+        });
+        document.getElementById('btn-admin-refresh').addEventListener('click', loadEnrollments);
+        document.getElementById('btn-admin-excel').addEventListener('click', exportExcel);
+        document.getElementById('btn-admin-pdf').addEventListener('click', exportPdf);
+        adminSearch.addEventListener('input', () => { if (adminRows.length) renderAdminTable(); });
+        document.getElementById('btn-admin-close').addEventListener('click', () => closeModal(adminModal));
+        document.getElementById('btn-admin-done').addEventListener('click',  () => closeModal(adminModal));
+        adminModal.addEventListener('click', e => { if (e.target === adminModal) closeModal(adminModal); });
+
         // ---------- Bridge for the main (non-module) script ----------
+
         window.DCS = {
             startEnrollment(courseIds) {
                 if (currentUser) {
