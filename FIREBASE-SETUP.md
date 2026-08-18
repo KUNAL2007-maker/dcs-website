@@ -89,8 +89,12 @@ When an authorised account logs in, an **ADMIN** button appears in the header
 next to LOG IN. It opens a table of every registration, with search and
 **EXCEL** / **PDF** download buttons.
 
-The admin address is already set to **checkship66@gmail.com** in the code. It
-lives in **two** places, which do different jobs:
+Two admin addresses are already set in the code:
+
+- `checkship66@gmail.com`
+- `cybercorejay723@gmail.com`
+
+They live in **two** places, which do different jobs:
 
 ### a) `index.html` — makes the button appear
 
@@ -99,21 +103,23 @@ Near the top of the `<script type="module">` block:
 ```js
 const ADMIN_EMAILS = [
     'checkship66@gmail.com',
+    'cybercorejay723@gmail.com',
 ];
 ```
 
-To add a second admin later, put one quoted address per line, comma
-separated — and add it to (b) as well.
-
 ### b) `firestore.rules` — actually releases the data
 
-The `isAdmin()` function holds the same address:
+The `isAdmin()` function holds the same addresses:
 
 ```
 && request.auth.token.get('email', '').lower() in [
-     'checkship66@gmail.com'
+     'checkship66@gmail.com',
+     'cybercorejay723@gmail.com'
    ];
 ```
+
+Note the commas differ between the files: a trailing comma after the last
+entry is fine in `index.html` but not in `firestore.rules`.
 
 **You still have to publish this.** Paste the whole `firestore.rules` file into
 Firebase → Firestore → **Rules** → **Publish**:
@@ -123,15 +129,21 @@ https://console.firebase.google.com/project/dcs-60b92/firestore/rules
 unhide a button with browser devtools. The rules are what make Firestore
 refuse. Until you publish them the admin sees a clear red error saying so.
 
+### Adding or removing an admin later
+
+Add the address to **both** lists, lowercase, then push the code *and*
+re-publish the rules. Doing only (a) gives someone a button and an empty table;
+doing only (b) gives them access with no button to click.
+
 ### The admin must sign in with Google
 
 Firebase does not check that you own an address when you register it with a
 password, so the rules require a **verified** email. Google sign-in verifies
 automatically; email/password does not.
 
-So: log in with **Continue with Google** as `checkship66@gmail.com`. If you use
-email/password instead, the console opens but explains that the address is
-unverified and shows no data.
+So: log in with **Continue with Google**. If you use email/password instead,
+the console opens but explains that the address is unverified and shows no
+data. This applies to every admin address, not just the first.
 
 ### What the admin can and cannot do
 
@@ -181,6 +193,6 @@ that step when you have your Razorpay account.
 4. Fill it in and submit. You should land on the payment step with **no**
    yellow warning — that means Firestore saved it.
 5. Check Firestore → Data → `enrollments` for the new document.
-6. Log in as `checkship66@gmail.com` (via **Continue with Google**) and confirm
-   the **ADMIN** button appears, the registration from step 4 is listed, and
-   both EXCEL and PDF download.
+6. Log in as one of the admin addresses (via **Continue with Google**) and
+   confirm the **ADMIN** button appears, the registration from step 4 is
+   listed, and both EXCEL and PDF download.
