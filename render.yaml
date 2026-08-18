@@ -1,0 +1,36 @@
+# Render Blueprint — Divine Cyber Solution static site
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Deploy from the Render dashboard: New > Blueprint > pick this repo.
+
+services:
+  - type: web
+    name: dcs-website
+    runtime: static
+
+    # Nothing to compile — Tailwind and Firebase both load from a CDN.
+    buildCommand: echo "static site, no build step required"
+
+    # index.html, the images and this file all live at the repo root.
+    staticPublishPath: .
+
+    branch: main
+
+    # Redeploy automatically on every push to main.
+    autoDeployTrigger: commit
+
+    # Deliberately no catch-all rewrite to /index.html: this is a single-page
+    # site, not a single-page *app*. A catch-all would serve the homepage in
+    # place of a missing image instead of returning an honest 404.
+
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      # Deny framing so the login form can't be embedded in a phishing page.
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
