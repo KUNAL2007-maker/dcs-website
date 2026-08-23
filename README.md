@@ -1,6 +1,6 @@
 # Divine Cyber Solution (DCS)
 
-Landing site for Divine Cyber Solution — cybersecurity training courses.
+Website for Divine Cyber Solution — cybersecurity training courses.
 
 ## Structure
 
