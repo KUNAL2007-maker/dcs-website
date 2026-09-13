@@ -39,9 +39,11 @@ service cloud.firestore {
       allow read: if isAdmin()
                   || (request.auth != null && resource.data.uid == request.auth.uid);
 
-      // Nobody edits or deletes from the browser — not even an admin. Manage
-      // these in the Firebase console or from a server using the Admin SDK.
-      allow update, delete: if false;
+      // The admin console can flag enquiries (enquiry: true/false) and
+      // soft-delete rows (removed: true/false), and can permanently delete a
+      // row from the History tab. Only verified, allowlisted admins may do so;
+      // students can never edit or delete an enrollment.
+      allow update, delete: if isAdmin();
     }
 
     // Everything else is closed by default.

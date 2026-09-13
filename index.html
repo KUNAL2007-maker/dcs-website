@@ -1535,6 +1535,9 @@
                 <button id="btn-admin-pdf" class="font-mono text-xs bg-accent-gold/10 border border-accent-gold/40 text-accent-gold px-3 py-2.5 hover:bg-accent-gold hover:text-black transition-all flex items-center gap-2 font-bold whitespace-nowrap">
                     <i class="fa-solid fa-file-pdf text-sm"></i> PDF
                 </button>
+                <button id="btn-admin-history" class="font-mono text-xs bg-surface-dim border border-gray-500/40 text-gray-300 px-3 py-2.5 hover:bg-gray-500/20 hover:text-white transition-all flex items-center gap-2 font-bold whitespace-nowrap">
+                    <i class="fa-solid fa-clock-rotate-left text-sm"></i> HISTORY
+                </button>
             </div>
 
             <!-- Totals strip -->
@@ -1548,11 +1551,11 @@
                     <div id="admin-stat-value" class="font-mono text-lg font-bold text-primary-glow">&mdash;</div>
                 </div>
                 <div class="bg-surface-dim border border-primary/20 px-3 py-2.5">
-                    <div class="font-mono text-[10px] text-gray-500 tracking-wider">PAID</div>
+                    <div class="font-mono text-[10px] text-gray-500 tracking-wider">ENQUIRY: YES</div>
                     <div id="admin-stat-paid" class="font-mono text-lg font-bold text-white">&mdash;</div>
                 </div>
                 <div class="bg-surface-dim border border-primary/20 px-3 py-2.5">
-                    <div class="font-mono text-[10px] text-gray-500 tracking-wider">PAYMENT PENDING</div>
+                    <div class="font-mono text-[10px] text-gray-500 tracking-wider">ENQUIRY: PENDING</div>
                     <div id="admin-stat-pending" class="font-mono text-lg font-bold text-yellow-300">&mdash;</div>
                 </div>
             </div>
@@ -1576,7 +1579,8 @@
                             <th class="px-3 py-3 font-bold whitespace-nowrap">COURSES</th>
                             <th class="px-3 py-3 font-bold whitespace-nowrap text-right">AMOUNT</th>
                             <th class="px-3 py-3 font-bold whitespace-nowrap">REFERENCE</th>
-                            <th class="px-3 py-3 font-bold whitespace-nowrap">PAYMENT</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">ENQUIRY</th>
+                            <th class="px-3 py-3 font-bold whitespace-nowrap">ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody id="admin-tbody" class="font-sans text-xs text-gray-300"></tbody>
@@ -2010,7 +2014,8 @@
             GoogleAuthProvider, signInWithPopup, updateProfile
         } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
         import {
-            getFirestore, collection, addDoc, getDocs, serverTimestamp
+            getFirestore, collection, addDoc, getDocs, serverTimestamp,
+            doc, updateDoc, deleteDoc
         } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
         // --- Firebase configuration (public client config — safe to ship) ---
@@ -2376,6 +2381,7 @@
         const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ESC_MAP[c]);
 
         let adminRows = [];   // every enrollment, newest first
+        let viewMode  = 'active';   // 'active' = current registrations, 'history' = removed ones
 
         function toDate(ts) {
             if (!ts) return null;
@@ -2422,40 +2428,69 @@
             STAT_IDS.forEach(id => { document.getElementById(id).textContent = '—'; });
 
         const tableMessage = msg =>
-            `<tr><td colspan="10" class="px-3 py-10 text-center text-gray-500 font-mono text-xs">${msg}</td></tr>`;
+            `<tr><td colspan="11" class="px-3 py-10 text-center text-gray-500 font-mono text-xs">${msg}</td></tr>`;
+
+        // Rows belonging to the current tab: active list hides removed rows,
+        // the History tab shows only removed rows.
+        const inViewRows = () =>
+            adminRows.filter(r => viewMode === 'history' ? r.removed === true : r.removed !== true);
 
         function filteredRows() {
             const q = adminSearch.value.trim().toLowerCase();
-            if (!q) return adminRows;
-            return adminRows.filter(r => [
+            const base = inViewRows();
+            if (!q) return base;
+            return base.filter(r => [
                 r.name, r.mobile, r.email, r.profession,
-                r.reference, r.paymentStatus, courseList(r).join(' ')
+                r.reference, courseList(r).join(' ')
             ].join(' ').toLowerCase().includes(q));
         }
 
         function renderAdminTable() {
+            const isHistory = viewMode === 'history';
             const rows  = filteredRows();
             const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
-            const paid  = rows.filter(r => String(r.paymentStatus).toLowerCase() === 'paid').length;
+            const enqYes = rows.filter(r => r.enquiry === true).length;
+            const viewTotal = inViewRows().length;
 
             document.getElementById('admin-stat-count').textContent   = rows.length;
             document.getElementById('admin-stat-value').textContent   = inr(total);
-            document.getElementById('admin-stat-paid').textContent    = paid;
-            document.getElementById('admin-stat-pending').textContent = rows.length - paid;
+            document.getElementById('admin-stat-paid').textContent    = enqYes;
+            document.getElementById('admin-stat-pending').textContent = rows.length - enqYes;
 
-            adminSubtitle.textContent = rows.length === adminRows.length
-                ? adminRows.length + ' registration' + (adminRows.length === 1 ? '' : 's')
-                : 'Showing ' + rows.length + ' of ' + adminRows.length + ' registrations';
+            const noun = isHistory ? 'removed registration' : 'registration';
+            adminSubtitle.textContent = rows.length === viewTotal
+                ? viewTotal + ' ' + noun + (viewTotal === 1 ? '' : 's')
+                : 'Showing ' + rows.length + ' of ' + viewTotal + ' ' + noun + (viewTotal === 1 ? '' : 's');
 
             if (!rows.length) {
                 adminTbody.innerHTML = tableMessage(
-                    adminRows.length ? 'No registration matches that search.' : 'No registrations yet.'
+                    isHistory
+                        ? (adminSearch.value.trim() ? 'No removed registration matches that search.' : 'History is empty — nothing has been removed.')
+                        : (adminSearch.value.trim() ? 'No registration matches that search.' : 'No registrations yet.')
                 );
                 return;
             }
 
             adminTbody.innerHTML = rows.map((r, i) => {
-                const isPaid = String(r.paymentStatus).toLowerCase() === 'paid';
+                const yes = r.enquiry === true;
+                const id  = esc(r.id);
+
+                // ENQUIRY: editable Y | N toggle in the active list; read-only badge in History.
+                const enquiryCell = isHistory
+                    ? `<span class="font-mono text-[10px] px-2 py-1 ${yes ? 'bg-primary/20 text-primary-glow' : 'bg-gray-500/15 text-gray-400'}">${yes ? 'YES' : 'NO'}</span>`
+                    : `<div class="inline-flex border border-primary/30 overflow-hidden font-mono text-[10px]">
+                            <button type="button" data-action="enq-yes" data-id="${id}" title="Enquiry done" class="px-2.5 py-1 transition-all ${yes ? 'bg-primary text-on-primary font-bold' : 'text-gray-400 hover:bg-primary/10'}">Y</button>
+                            <button type="button" data-action="enq-no" data-id="${id}" title="Enquiry pending" class="px-2.5 py-1 transition-all border-l border-primary/30 ${yes ? 'text-gray-400 hover:bg-yellow-500/10' : 'bg-yellow-500/80 text-black font-bold'}">N</button>
+                       </div>`;
+
+                // ACTIONS: Remove (soft-delete) in the active list; Restore + Delete-forever in History.
+                const actionsCell = isHistory
+                    ? `<div class="flex items-center gap-2 whitespace-nowrap">
+                            <button type="button" data-action="restore" data-id="${id}" class="font-mono text-[10px] px-2 py-1 border border-primary/40 text-primary-glow hover:bg-primary hover:text-on-primary transition-all"><i class="fa-solid fa-rotate-left"></i> RESTORE</button>
+                            <button type="button" data-action="delete" data-id="${id}" title="Delete forever" class="font-mono text-[10px] px-2 py-1 border border-red-500/40 text-red-300 hover:bg-red-500 hover:text-white transition-all"><i class="fa-solid fa-trash"></i></button>
+                       </div>`
+                    : `<button type="button" data-action="remove" data-id="${id}" class="font-mono text-[10px] px-2.5 py-1 border border-red-500/40 text-red-300 hover:bg-red-500 hover:text-white transition-all whitespace-nowrap"><i class="fa-solid fa-trash-can"></i> REMOVE</button>`;
+
                 return `<tr class="border-t border-primary/10 hover:bg-primary/5 align-top">
                     <td class="px-3 py-2.5 font-mono text-gray-500">${i + 1}</td>
                     <td class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(fmtDate(r.createdAt))}</td>
@@ -2466,11 +2501,8 @@
                     <td class="px-3 py-2.5">${courseList(r).map(c => `<div class="whitespace-nowrap">&bull; ${esc(c)}</div>`).join('')}</td>
                     <td class="px-3 py-2.5 text-right font-mono text-primary-glow whitespace-nowrap">${esc(inr(Number(r.amount) || 0))}</td>
                     <td class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(r.reference)}</td>
-                    <td class="px-3 py-2.5 whitespace-nowrap">
-                        <span class="font-mono text-[10px] px-2 py-1 ${isPaid ? 'bg-primary/20 text-primary-glow' : 'bg-yellow-500/15 text-yellow-300'}">
-                            ${esc(String(r.paymentStatus || 'pending').toUpperCase())}
-                        </span>
-                    </td>
+                    <td class="px-3 py-2.5 whitespace-nowrap">${enquiryCell}</td>
+                    <td class="px-3 py-2.5">${actionsCell}</td>
                 </tr>`;
             }).join('');
         }
@@ -2544,7 +2576,7 @@
         // "Amount (INR)" with plain numbers rather than a ₹ column: jsPDF's
         // built-in fonts have no rupee glyph and would print a blank box.
         const EXPORT_HEAD = ['#', 'Date', 'Name', 'Mobile', 'Email', 'Profession',
-                             'Courses', 'Amount (INR)', 'Reference', 'Payment'];
+                             'Courses', 'Amount (INR)', 'Reference', 'Enquiry'];
 
         const exportMatrix = rows => rows.map((r, i) => [
             i + 1,
@@ -2556,7 +2588,7 @@
             courseList(r).join('; '),
             Number(r.amount) || 0,
             r.reference || '',
-            String(r.paymentStatus || 'pending')
+            r.enquiry === true ? 'Yes' : 'No'
         ]);
 
         function downloadBlob(blob, filename) {
@@ -2695,9 +2727,114 @@
             }
         });
 
+        // ---------- Admin writes (enquiry flag, soft-delete, restore, purge) ----------
+        // These require firestore.rules to allow update/delete for isAdmin().
+        // If the rules are still the old "if false", Firestore replies
+        // permission-denied and adminWriteError() explains how to publish them.
+        function adminWriteError(err) {
+            console.error('Admin write failed:', err);
+            if (err && err.code === 'permission-denied') {
+                adminBanner(
+                    '<b>Firestore refused the change.</b> Publish the updated <code>firestore.rules</code> ' +
+                    '(Firebase &rarr; Firestore &rarr; Rules &rarr; Publish) so admins can edit and remove registrations.',
+                    'error'
+                );
+            } else if (err && err.message === 'timeout') {
+                adminBanner('<b>Firestore did not respond.</b> Check the connection and try again.', 'error');
+            } else {
+                adminBanner('<b>Could not save the change.</b> ' + esc((err && err.message) || String(err)), 'error');
+            }
+        }
+
+        async function setEnquiry(row, val) {
+            if (row.enquiry === val) return;
+            const prev = row.enquiry;
+            row.enquiry = val;              // optimistic
+            renderAdminTable();
+            try {
+                await withTimeout(updateDoc(doc(db, 'enrollments', row.id), { enquiry: val }), 8000);
+                hideAdminBanner();
+            } catch (err) {
+                row.enquiry = prev;         // revert
+                renderAdminTable();
+                adminWriteError(err);
+            }
+        }
+
+        async function setRemoved(row, removed) {
+            const prev = row.removed;
+            row.removed = removed;          // optimistic
+            renderAdminTable();
+            try {
+                await withTimeout(updateDoc(doc(db, 'enrollments', row.id), {
+                    removed: removed,
+                    removedAt: removed ? serverTimestamp() : null
+                }), 8000);
+                adminBanner(removed
+                    ? 'Registration moved to History. Open the HISTORY tab to restore it.'
+                    : 'Registration restored to the active list.', 'info');
+            } catch (err) {
+                row.removed = prev;         // revert
+                renderAdminTable();
+                adminWriteError(err);
+            }
+        }
+
+        async function deleteForever(row) {
+            try {
+                await withTimeout(deleteDoc(doc(db, 'enrollments', row.id)), 8000);
+                adminRows = adminRows.filter(r => r.id !== row.id);
+                renderAdminTable();
+                adminBanner('Registration permanently deleted.', 'info');
+            } catch (err) {
+                adminWriteError(err);
+            }
+        }
+
+        // One delegated listener handles every row button (rows are re-rendered
+        // via innerHTML, so per-button listeners would be lost on each render).
+        adminTbody.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action][data-id]');
+            if (!btn) return;
+            const row = adminRows.find(r => r.id === btn.dataset.id);
+            if (!row) return;
+            switch (btn.dataset.action) {
+                case 'enq-yes': setEnquiry(row, true);  break;
+                case 'enq-no':  setEnquiry(row, false); break;
+                case 'remove':
+                    if (confirm('Remove this registration from the active list?\n\nIt will be moved to History, where you can restore it anytime.'))
+                        setRemoved(row, true);
+                    break;
+                case 'restore': setRemoved(row, false); break;
+                case 'delete':
+                    if (confirm('Delete this registration FOREVER?\n\nThis cannot be undone and it will disappear from History too.'))
+                        deleteForever(row);
+                    break;
+            }
+        });
+
+        // History tab toggle (top-right).
+        const btnHistory = document.getElementById('btn-admin-history');
+        function setViewMode(mode) {
+            viewMode = mode;
+            const hist = mode === 'history';
+            btnHistory.innerHTML = hist
+                ? '<i class="fa-solid fa-arrow-left text-sm"></i> ACTIVE LIST'
+                : '<i class="fa-solid fa-clock-rotate-left text-sm"></i> HISTORY';
+            btnHistory.classList.toggle('bg-accent-gold', hist);
+            btnHistory.classList.toggle('text-black', hist);
+            btnHistory.classList.toggle('border-accent-gold', hist);
+            btnHistory.classList.toggle('bg-surface-dim', !hist);
+            btnHistory.classList.toggle('text-gray-300', !hist);
+            hideAdminBanner();
+            renderAdminTable();
+        }
+        btnHistory.addEventListener('click', () => setViewMode(viewMode === 'history' ? 'active' : 'history'));
+
         // ---------- Admin wiring ----------
         adminBtn.addEventListener('click', () => {
             adminSearch.value = '';
+            setViewMode('active');
             openModal(adminModal);
             loadEnrollments();
         });
