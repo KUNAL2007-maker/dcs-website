@@ -13,3 +13,6 @@ node_modules/
 
 # Separate project, not part of this site
 di3/
+
+# Design reference assets
+new ui/

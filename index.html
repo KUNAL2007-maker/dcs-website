@@ -374,8 +374,8 @@
 
             <!-- Brand Logo -->
             <a href="#" class="flex items-center gap-2 group flex-shrink-0">
-                <div class="w-10 h-10 border-2 border-primary overflow-hidden">
-                    <img src="dcs-logo.jpeg" alt="DCS Logo" class="w-full h-full object-cover"/>
+                <div class="w-10 h-10 border-2 border-primary overflow-hidden bg-white flex items-center justify-center p-0.5">
+                    <img src="dcs-logo.png" alt="DCS Logo" class="w-full h-full object-contain"/>
                 </div>
                 <div class="leading-tight hidden sm:block">
                     <div class="font-mono text-sm font-bold tracking-wider text-white">
@@ -525,7 +525,7 @@
             <!-- FOUNDER & DCS BRAND SHOWCASE SECTION -->
             <div id="instructor-dcs" class="glass-panel p-5 md:p-10 border-2 border-primary/40 max-w-5xl mx-auto text-left font-sans space-y-6 md:space-y-8 my-6 md:my-8 relative overflow-hidden">
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
                     
                     <!-- Left Column: Founder & Contact Details -->
                     <div class="space-y-6">
@@ -603,7 +603,7 @@
                     </div>
 
                     <!-- Right Column: Expertise & Certification Pillars -->
-                    <div class="space-y-6">
+                    <div class="space-y-6 md:flex md:flex-col">
                         <div class="font-mono text-xs text-primary font-bold uppercase tracking-wider">[ DCS INSTITUTIONAL EXPERTISE ]</div>
 
                         <div class="grid grid-cols-1 gap-3 font-mono text-xs">
@@ -657,7 +657,7 @@
                         </div>
 
                         <!-- What Every Learner Gets -->
-                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5">
+                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5 md:flex-1 md:flex md:flex-col md:justify-center">
                             <div class="font-mono text-xs text-primary font-bold uppercase tracking-wider">[ EVERY LEARNER GETS ]</div>
                             <ul class="space-y-2 text-[13px] text-gray-300 font-normal">
                                 <li class="flex items-start gap-2.5">
@@ -678,13 +678,6 @@
                                 </li>
                             </ul>
                         </div>
-
-                        <!-- Direct CTA -->
-                        <a href="https://wa.me/qr/MZCXKYPORKX4B1" target="_blank" rel="noopener noreferrer"
-                           class="flex items-center justify-center gap-2.5 bg-primary text-on-primary font-mono text-xs font-extrabold uppercase tracking-wide py-3.5 px-4 hover:bg-primary-glow transition-all btn-chamfer text-center">
-                            <i class="fa-brands fa-whatsapp text-base"></i>
-                            Talk To Jayraj Before You Enroll
-                        </a>
 
                     </div>
 
@@ -817,6 +810,11 @@
                 <div class="glass-panel morph-card fade-in-item p-6 md:p-8 flex flex-col justify-between border-2 border-primary/30 relative">
                     <div class="space-y-6">
 
+                        <!-- Course Banner -->
+                        <div class="mb-1 border border-primary/30 overflow-hidden">
+                            <img src="course-1.svg" alt="Basic to Advance Level of Cyber Security" class="w-full h-36 object-cover"/>
+                        </div>
+
                         <!-- Badge -->
                         <div class="flex justify-between items-center font-mono text-xs">
                             <span class="bg-primary/20 text-primary border border-primary/40 px-3 py-1 font-bold">
@@ -864,22 +862,12 @@
 
                     </div>
 
-                    <!-- Price + Actions: bottom-anchored so the price line matches across all 3 cards -->
+                    <!-- Actions: bottom-anchored so the button line matches across all 3 cards -->
                     <div class="mt-auto pt-6">
-                        <!-- Price Tag -->
-                        <div class="font-mono">
-                            <div class="text-xs text-gray-400">ONE-TIME PRICE</div>
-                            <div class="flex items-baseline gap-3">
-                                <span class="text-4xl font-extrabold text-primary">₹5,999</span>
-                                <span class="text-lg text-gray-500 line-through">₹10,000</span>
-                                <span class="text-xs text-accent-gold font-bold">40% OFF</span>
-                            </div>
-                        </div>
-
                         <!-- Action Buttons -->
-                        <div class="space-y-3 pt-6 font-mono text-xs">
+                        <div class="space-y-3 pt-2 font-mono text-xs">
                             <button class="w-full bg-primary text-on-primary py-4 font-extrabold tracking-wide uppercase hover:bg-primary-glow hover:-translate-y-0.5 transition-all btn-enroll-cart btn-chamfer text-sm" data-course-id="c1" data-course-name="Basic to Advance Level of Cyber Security" data-price="5999">
-                                [ ENROLL NOW - ₹5,999 ]
+                                [ ENROLL NOW ]
                             </button>
 
                             <button class="w-full border border-primary/30 text-primary py-2.5 font-semibold hover:bg-primary/10 transition-all btn-view-syllabus text-xs" data-course-id="c1">
@@ -898,6 +886,12 @@
                     </div>
 
                     <div class="space-y-6 pt-3">
+
+                        <!-- Course Banner -->
+                        <div class="mb-1 border border-primary/30 overflow-hidden">
+                            <img src="course-2.svg" alt="AI with Cyber Security" class="w-full h-36 object-cover"/>
+                        </div>
+
                         
                         <!-- Badge -->
                         <div class="flex justify-between items-center font-mono text-xs">
@@ -938,22 +932,12 @@
 
                     </div>
 
-                    <!-- Price + Actions: bottom-anchored so the price line matches across all 3 cards -->
+                    <!-- Actions: bottom-anchored so the button line matches across all 3 cards -->
                     <div class="mt-auto pt-6">
-                        <!-- Price Tag -->
-                        <div class="font-mono">
-                            <div class="text-xs text-gray-400">ONE-TIME PRICE</div>
-                            <div class="flex items-baseline gap-3">
-                                <span class="text-4xl font-extrabold text-primary-glow">₹4,499</span>
-                                <span class="text-lg text-gray-500 line-through">₹9,000</span>
-                                <span class="text-xs text-accent-gold font-bold">50% OFF</span>
-                            </div>
-                        </div>
-
                         <!-- Action Buttons -->
-                        <div class="space-y-3 pt-6 font-mono text-xs">
+                        <div class="space-y-3 pt-2 font-mono text-xs">
                             <button class="w-full bg-primary text-on-primary py-4 font-extrabold tracking-wide uppercase hover:bg-primary-glow hover:-translate-y-0.5 transition-all btn-enroll-cart btn-chamfer text-sm" data-course-id="c2" data-course-name="AI with Cyber Security" data-price="4499">
-                                [ ENROLL NOW - ₹4,499 ]
+                                [ ENROLL NOW ]
                             </button>
 
                             <button class="w-full border border-primary/30 text-primary py-2.5 font-semibold hover:bg-primary/10 transition-all btn-view-syllabus text-xs" data-course-id="c2">
@@ -966,6 +950,11 @@
                 <!-- COURSE 3 CARD (ALL-IN-ONE BOOTCAMP) -->
                 <div class="glass-panel morph-card fade-in-item p-6 md:p-8 flex flex-col justify-between border-2 border-primary/30 relative">
                     <div class="space-y-6">
+
+                        <!-- Course Banner -->
+                        <div class="mb-1 border border-primary/30 overflow-hidden">
+                            <img src="course-3.svg" alt="SOC Analyst (Job Ready)" class="w-full h-36 object-cover"/>
+                        </div>
 
                         <!-- Badge -->
                         <div class="flex justify-between items-center font-mono text-xs">
@@ -1010,22 +999,12 @@
 
                     </div>
 
-                    <!-- Price + Actions: bottom-anchored so the price line matches across all 3 cards -->
+                    <!-- Actions: bottom-anchored so the button line matches across all 3 cards -->
                     <div class="mt-auto pt-6">
-                        <!-- Price Tag -->
-                        <div class="font-mono">
-                            <div class="text-xs text-gray-400">ONE-TIME PRICE</div>
-                            <div class="flex items-baseline gap-3">
-                                <span class="text-4xl font-extrabold text-primary">₹5,999</span>
-                                <span class="text-lg text-gray-500 line-through">₹12,000</span>
-                                <span class="text-xs text-accent-gold font-bold">50% OFF</span>
-                            </div>
-                        </div>
-
                         <!-- Action Buttons -->
-                        <div class="space-y-3 pt-6 font-mono text-xs">
+                        <div class="space-y-3 pt-2 font-mono text-xs">
                             <button class="w-full bg-primary text-on-primary py-4 font-extrabold tracking-wide uppercase hover:bg-primary-glow hover:-translate-y-0.5 transition-all btn-enroll-cart btn-chamfer text-sm" data-course-id="c3" data-course-name="SOC Analyst (Job Ready)" data-price="5999">
-                                [ ENROLL NOW - ₹5,999 ]
+                                [ ENROLL NOW ]
                             </button>
 
                             <button class="w-full border border-primary/30 text-primary py-2.5 font-semibold hover:bg-primary/10 transition-all btn-view-syllabus text-xs" data-course-id="c3">
@@ -1175,15 +1154,6 @@
                         <span>cybercorejay723@gmail.com</span>
                     </div>
                 </div>
-
-                <!-- Payment Trust Icons -->
-                <div class="flex items-center gap-4 text-xl text-gray-400">
-                    <i class="fa-brands fa-cc-visa" title="Visa"></i>
-                    <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
-                    <i class="fa-brands fa-cc-amex" title="Amex"></i>
-                    <i class="fa-brands fa-cc-paypal" title="PayPal"></i>
-                    <i class="fa-brands fa-apple-pay text-2xl" title="Apple Pay"></i>
-                </div>
             </div>
 
             <div class="border-t border-primary/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-400 text-xs">
@@ -1199,7 +1169,7 @@
     </footer>
 
     <!-- FLOATING QUICK NAVIGATION DOCK (EASY WEBPAGE NAVIGATION) -->
-    <div id="floating-dock" class="dock-hidden fixed bottom-6 right-6 z-40 flex flex-col gap-2 font-mono text-xs">
+    <div id="floating-dock" class="dock-hidden fixed bottom-24 right-6 z-40 flex flex-col gap-2 font-mono text-xs">
         <a href="#" title="Back to Top" class="w-10 h-10 bg-surface-container/95 border-2 border-primary/40 text-primary-glow flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all glass-panel shadow-2xl">
             <i class="fa-solid fa-arrow-up text-sm"></i>
         </a>
@@ -1209,6 +1179,30 @@
         <a href="#courses" title="Jump to Courses" class="w-10 h-10 bg-surface-container/95 border-2 border-primary/40 text-primary-glow flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all glass-panel shadow-2xl">
             <i class="fa-solid fa-layer-group text-sm"></i>
         </a>
+    </div>
+
+    <!-- FLOATING WHATSAPP BUTTON (circular, bottom-right) -->
+    <a href="https://wa.me/qr/MZCXKYPORKX4B1" target="_blank" rel="noopener noreferrer"
+       id="whatsapp-fab" title="Chat with us on WhatsApp" aria-label="Chat with us on WhatsApp"
+       class="fixed bottom-6 right-6 z-50 w-14 h-14 flex items-center justify-center bg-[#25D366] text-white shadow-2xl hover:scale-110 transition-transform"
+       style="border-radius:9999px !important">
+        <span class="absolute inset-0 bg-[#25D366] opacity-60 animate-ping" style="border-radius:9999px !important"></span>
+        <i class="fa-brands fa-whatsapp text-3xl relative"></i>
+    </a>
+
+    <!-- LIVE ENROLLMENT NOTIFICATION TOAST (bottom-left) -->
+    <div id="enroll-toast" class="hidden fixed bottom-5 left-5 z-50 w-[calc(100vw-8rem)] max-w-[17rem] bg-surface-container/95 backdrop-blur border-l-4 border-primary glass-panel shadow-2xl font-sans">
+        <div class="flex items-start gap-3 p-3.5">
+            <div class="w-9 h-9 flex-shrink-0 bg-primary/15 border border-primary/40 flex items-center justify-center text-lg">🎉</div>
+            <div class="flex-1 min-w-0 pr-4">
+                <p class="text-sm text-white leading-snug"><span id="toast-name" class="font-bold text-primary-glow"></span> enrolled in the course</p>
+                <p id="toast-course" class="text-xs text-gray-300 font-mono truncate mt-0.5"></p>
+                <p id="toast-time" class="text-[10px] text-gray-500 mt-1"></p>
+            </div>
+            <button id="toast-close" aria-label="Dismiss" class="absolute top-2 right-2 text-gray-400 hover:text-white text-sm leading-none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
     </div>
 
     <!-- CART & CHECKOUT SLIDE-OUT DRAWER -->
@@ -1232,26 +1226,15 @@
                 </div>
             </div>
 
-            <!-- Cart Summary & Checkout Form -->
+            <!-- Cart Summary & Enroll -->
             <div class="border-t border-primary/20 pt-4 space-y-4 font-mono">
-                <div class="space-y-2 text-xs">
-                    <div class="flex justify-between text-gray-300">
-                        <span>SUBTOTAL:</span>
-                        <span id="cart-subtotal" class="text-white font-bold">₹0</span>
-                    </div>
-                    <div class="flex justify-between text-primary font-bold text-sm">
-                        <span>TOTAL DUE TODAY:</span>
-                        <span id="cart-total">₹0</span>
-                    </div>
-                </div>
-
                 <div class="bg-surface-container p-3 border border-primary/20 text-xs text-gray-300 flex items-center gap-2 font-sans">
                     <i class="fa-solid fa-shield-halved text-primary text-base"></i>
-                    <span>Secure checkout • Lifetime access & certificate included</span>
+                    <span>Lifetime access & certificate included</span>
                 </div>
 
                 <button id="btn-checkout-submit" class="w-full bg-primary text-on-primary py-4 font-extrabold tracking-wide uppercase hover:bg-primary-glow transition-all btn-chamfer text-sm">
-                    [ PROCEED TO INSTANT CHECKOUT ]
+                    [ PROCEED TO ENROLL ]
                 </button>
             </div>
 
@@ -1366,7 +1349,7 @@
                 <div class="mb-6">
                     <div class="font-mono text-[10px] text-primary uppercase tracking-wide mb-1">Step 1 of 2 // Your Details</div>
                     <h3 class="font-mono text-lg font-extrabold text-white uppercase tracking-wide">ENROLLMENT FORM</h3>
-                    <p class="font-sans text-xs text-gray-400 mt-1">Fill this in and you'll move straight to payment.</p>
+                    <p class="font-sans text-xs text-gray-400 mt-1">Fill this in and our team will contact you to confirm your seat.</p>
                 </div>
 
                 <form id="enroll-form" class="space-y-4" novalidate>
@@ -1407,63 +1390,54 @@
                                 <input type="checkbox" class="enroll-course mt-0.5 w-4 h-4 flex-shrink-0" style="accent-color:#10b981" value="Basic to Advance Level of Cyber Security" data-price="5999" data-course-id="c1"/>
                                 <span class="font-sans text-sm text-gray-200 leading-snug">
                                     Basic to Advance Level of Cyber Security
-                                    <span class="block font-mono text-xs text-primary font-bold mt-0.5">₹5,999</span>
                                 </span>
                             </label>
                             <label class="flex items-start gap-3 bg-surface-container border border-primary/20 p-3 cursor-pointer hover:border-primary/50 transition-colors">
                                 <input type="checkbox" class="enroll-course mt-0.5 w-4 h-4 flex-shrink-0" style="accent-color:#10b981" value="AI with Cyber Security" data-price="4499" data-course-id="c2"/>
                                 <span class="font-sans text-sm text-gray-200 leading-snug">
                                     AI with Cyber Security
-                                    <span class="block font-mono text-xs text-primary font-bold mt-0.5">₹4,499</span>
                                 </span>
                             </label>
                             <label class="flex items-start gap-3 bg-surface-container border border-primary/20 p-3 cursor-pointer hover:border-primary/50 transition-colors">
                                 <input type="checkbox" class="enroll-course mt-0.5 w-4 h-4 flex-shrink-0" style="accent-color:#10b981" value="SOC Analyst (Job Ready)" data-price="5999" data-course-id="c3"/>
                                 <span class="font-sans text-sm text-gray-200 leading-snug">
                                     SOC Analyst (Job Ready)
-                                    <span class="block font-mono text-xs text-primary font-bold mt-0.5">₹5,999</span>
                                 </span>
                             </label>
                         </div>
-                    </div>
-
-                    <!-- Running total -->
-                    <div class="flex items-center justify-between border-t border-primary/20 pt-3 font-mono">
-                        <span class="text-xs text-gray-400 uppercase">Total Payable</span>
-                        <span id="enroll-total" class="text-2xl font-extrabold text-primary">₹0</span>
                     </div>
 
                     <div id="enroll-error" class="hidden font-sans text-xs text-red-400 bg-red-500/10 border border-red-500/30 px-3 py-2"></div>
 
                     <button type="submit" id="btn-enroll-submit"
                         class="w-full bg-primary text-on-primary py-4 font-mono font-extrabold text-sm uppercase tracking-wide hover:bg-primary-glow transition-all btn-chamfer disabled:opacity-50 disabled:cursor-not-allowed">
-                        [ SUBMIT & PROCEED TO PAYMENT ]
+                        [ SUBMIT REQUEST ]
                     </button>
                 </form>
             </div>
 
-            <!-- STEP 2: Payment handoff -->
+            <!-- STEP 2: Request received — team will make contact -->
             <div id="enroll-step-pay" class="hidden text-center">
                 <div class="w-14 h-14 border-2 border-primary mx-auto mb-4 flex items-center justify-center">
                     <i class="fa-solid fa-check text-primary text-2xl"></i>
                 </div>
-                <div class="font-mono text-[10px] text-primary uppercase tracking-wide mb-1">Step 2 of 2 // Payment</div>
-                <h3 class="font-mono text-lg font-extrabold text-white uppercase tracking-wide mb-2">DETAILS SAVED</h3>
-                <p class="font-sans text-sm text-gray-300 mb-1">Thanks <span id="pay-name" class="text-primary font-bold"></span> — your enrollment request is recorded.</p>
+                <div class="font-mono text-[10px] text-primary uppercase tracking-wide mb-1">Step 2 of 2 // Confirmation</div>
+                <h3 class="font-mono text-lg font-extrabold text-white uppercase tracking-wide mb-2">REQUEST RECEIVED</h3>
+                <p class="font-sans text-sm text-gray-300 mb-1">Thanks <span id="pay-name" class="text-primary font-bold"></span> — your enrollment request has been received.</p>
+                <p class="font-sans text-sm text-gray-300 mb-1">Our team will contact you shortly on your mobile number to confirm your seat and guide you through the next steps.</p>
                 <p class="font-sans text-xs text-gray-400 mb-5">Reference: <span id="pay-ref" class="font-mono text-primary-glow"></span></p>
 
                 <div id="pay-save-status" class="hidden font-sans text-xs text-yellow-300 bg-yellow-500/10 border border-yellow-500/30 px-3 py-2 mb-4 text-left leading-relaxed"></div>
 
                 <div class="bg-surface-container border border-primary/30 p-4 mb-5 text-left font-mono text-xs space-y-2">
                     <div class="flex justify-between text-gray-400"><span>COURSES</span><span id="pay-courses" class="text-white text-right ml-4"></span></div>
-                    <div class="flex justify-between border-t border-primary/20 pt-2"><span class="text-gray-400">AMOUNT DUE</span><span id="pay-amount" class="text-primary font-extrabold text-lg"></span></div>
                 </div>
 
-                <button id="btn-razorpay" class="w-full bg-primary text-on-primary py-4 font-mono font-extrabold text-sm uppercase tracking-wide hover:bg-primary-glow transition-all btn-chamfer">
-                    [ PAY NOW VIA RAZORPAY ]
-                </button>
+                <a href="https://wa.me/qr/MZCXKYPORKX4B1" target="_blank" rel="noopener" class="block w-full bg-primary text-on-primary py-4 font-mono font-extrabold text-sm uppercase tracking-wide hover:bg-primary-glow transition-all btn-chamfer">
+                    [ MESSAGE US ON WHATSAPP ]
+                </a>
 
-                <p id="razorpay-note" class="font-sans text-[11px] text-gray-500 mt-3 leading-relaxed"></p>
+                <p class="font-sans text-[11px] text-gray-500 mt-3 leading-relaxed">Prefer to reach out first? Tap above to WhatsApp us your reference number.</p>
 
                 <button id="btn-enroll-done" class="font-mono text-xs text-gray-400 hover:text-primary underline mt-4">Close this window</button>
             </div>
@@ -1670,8 +1644,8 @@
                     containerEl.innerHTML = `<div class="text-center py-8 text-gray-400 font-sans text-sm">
                         Your shopping cart is currently empty.<br/>Select one of our 3 courses to enroll!
                     </div>`;
-                    subtotalEl.textContent = '₹0';
-                    totalEl.textContent = '₹0';
+                    if (subtotalEl) subtotalEl.textContent = '₹0';
+                    if (totalEl) totalEl.textContent = '₹0';
                     return;
                 }
 
@@ -1683,7 +1657,6 @@
                         <div class="glass-panel p-3 border border-primary/30 flex justify-between items-center">
                             <div>
                                 <div class="font-bold text-white text-sm">${item.name}</div>
-                                <div class="text-primary font-mono font-bold text-sm">₹${item.price.toLocaleString('en-IN')}</div>
                             </div>
                             <button class="text-red-400 hover:text-red-300 font-bold px-2 py-1 btn-remove-item font-mono text-xs" data-idx="${idx}">
                                 [REMOVE]
@@ -1693,8 +1666,8 @@
                 });
 
                 containerEl.innerHTML = html;
-                subtotalEl.textContent = `₹${sum.toLocaleString('en-IN')}`;
-                totalEl.textContent = `₹${sum.toLocaleString('en-IN')}`;
+                if (subtotalEl) subtotalEl.textContent = `₹${sum.toLocaleString('en-IN')}`;
+                if (totalEl) totalEl.textContent = `₹${sum.toLocaleString('en-IN')}`;
 
                 document.querySelectorAll('.btn-remove-item').forEach(btn => {
                     btn.addEventListener('click', (e) => {
@@ -2226,7 +2199,7 @@
             const total = COURSE_BOXES()
                 .filter(b => b.checked)
                 .reduce((sum, b) => sum + parseInt(b.dataset.price), 0);
-            enrollTotal.textContent = inr(total);
+            if (enrollTotal) enrollTotal.textContent = inr(total);
             return total;
         }
         COURSE_BOXES().forEach(b => b.addEventListener('change', () => {
@@ -2301,14 +2274,13 @@
                 console.error('Enrollment save did not confirm:', err);
             } finally {
                 enrollSubmit.disabled = false;
-                enrollSubmit.textContent = '[ SUBMIT & PROCEED TO PAYMENT ]';
+                enrollSubmit.textContent = '[ SUBMIT REQUEST ]';
             }
 
-            // Move to the payment step.
+            // Move to the confirmation step.
             document.getElementById('pay-name').textContent    = name.split(' ')[0];
             document.getElementById('pay-ref').textContent     = ref;
             document.getElementById('pay-courses').textContent  = courses.join(', ');
-            document.getElementById('pay-amount').textContent   = inr(amount);
 
             const saveStatus = document.getElementById('pay-save-status');
             if (saved) {
@@ -2323,26 +2295,6 @@
             stepForm.classList.add('hidden');
             stepPay.classList.remove('hidden');
             enrollModal.scrollTop = 0;
-        });
-
-        // ---------- Razorpay handoff (keys not configured yet) ----------
-        const RAZORPAY_KEY_ID = '';   // <-- paste your Razorpay Key ID here when ready
-
-        const razorpayNote = document.getElementById('razorpay-note');
-        if (!RAZORPAY_KEY_ID) {
-            razorpayNote.textContent = 'Razorpay isn’t connected yet — this button will open the payment window once the key is added.';
-        }
-
-        document.getElementById('btn-razorpay').addEventListener('click', () => {
-            if (!RAZORPAY_KEY_ID) {
-                alert(
-                    'Razorpay is not connected yet.\n\n' +
-                    'Your details have been saved. To complete payment now, contact DCS on WhatsApp ' +
-                    'and quote your reference number.'
-                );
-                return;
-            }
-            // Once RAZORPAY_KEY_ID is set, the Razorpay checkout opens here.
         });
 
         document.getElementById('btn-enroll-close').addEventListener('click', () => closeModal(enrollModal));
@@ -2720,6 +2672,50 @@
             },
             isLoggedIn: () => !!currentUser
         };
+    </script>
+
+    <!-- LIVE ENROLLMENT NOTIFICATION TOAST — social proof popups -->
+    <script>
+    (function () {
+        const toast = document.getElementById('enroll-toast');
+        if (!toast) return;
+        const nameEl   = document.getElementById('toast-name');
+        const courseEl = document.getElementById('toast-course');
+        const timeEl   = document.getElementById('toast-time');
+        const closeBtn = document.getElementById('toast-close');
+
+        // 10 random Indian student names.
+        const NAMES = [
+            'Aarav Sharma', 'Prasen Sonawane', 'Sneha Iyer', 'Rohan Deshmukh', 'Ananya Nair',
+            'Vikram Reddy', 'Priya Menon', 'Karthik Krishnan', 'Isha Patel', 'Aditya Kulkarni'
+        ];
+        const COURSES = [
+            'Basic to Advance Level of Cyber Security',
+            'AI with Cyber Security',
+            'SOC Analyst (Job Ready)'
+        ];
+        const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+        let hideTimer = null;
+        function showOne() {
+            nameEl.textContent   = pick(NAMES);
+            courseEl.textContent = '“' + pick(COURSES) + '”';
+            const hrs = Math.floor(Math.random() * 22) + 2;   // "2–23 hours ago"
+            timeEl.textContent   = hrs + (hrs === 1 ? ' hour ago' : ' hours ago');
+            toast.classList.remove('hidden');
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(() => toast.classList.add('hidden'), 8000);  // on screen ~8s
+        }
+
+        closeBtn.addEventListener('click', () => {
+            toast.classList.add('hidden');
+            clearTimeout(hideTimer);
+        });
+
+        // First popup shortly after load, then a fresh one every 4 minutes.
+        setTimeout(showOne, 6000);
+        setInterval(showOne, 4 * 60 * 1000);
+    })();
     </script>
 </body>
 </html>
