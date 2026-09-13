@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="360" viewBox="0 0 800 360" font-family="'JetBrains Mono','Courier New',monospace">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#0a0f18"/>
+    </linearGradient>
+    <linearGradient id="grn2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+    <radialGradient id="glow2" cx="0.72" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#10b981" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#10b981" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid2" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M34 0H0V34" fill="none" stroke="#10b981" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="800" height="360" fill="url(#bg2)"/>
+  <rect width="800" height="360" fill="url(#grid2)"/>
+  <rect width="800" height="360" fill="url(#glow2)"/>
+
+  <!-- neural nodes -->
+  <g stroke="#10b981" stroke-opacity="0.25" stroke-width="1.5">
+    <line x1="470" y1="90" x2="560" y2="150"/>
+    <line x1="470" y1="270" x2="560" y2="150"/>
+    <line x1="560" y1="150" x2="680" y2="110"/>
+    <line x1="560" y1="150" x2="680" y2="210"/>
+    <line x1="680" y1="110" x2="720" y2="180"/>
+    <line x1="680" y1="210" x2="720" y2="180"/>
+  </g>
+  <g fill="#6bcfa5">
+    <circle cx="470" cy="90" r="6"/><circle cx="470" cy="270" r="6"/>
+    <circle cx="680" cy="110" r="6"/><circle cx="680" cy="210" r="6"/>
+    <circle cx="720" cy="180" r="6"/>
+  </g>
+
+  <!-- AI processor chip -->
+  <g transform="translate(560,150)">
+    <!-- pins -->
+    <g stroke="url(#grn2)" stroke-width="5">
+      <line x1="-70" y1="-40" x2="-92" y2="-40"/><line x1="-70" y1="0" x2="-92" y2="0"/><line x1="-70" y1="40" x2="-92" y2="40"/>
+      <line x1="70" y1="-40" x2="92" y2="-40"/><line x1="70" y1="0" x2="92" y2="0"/><line x1="70" y1="40" x2="92" y2="40"/>
+      <line x1="-40" y1="-70" x2="-40" y2="-92"/><line x1="0" y1="-70" x2="0" y2="-92"/><line x1="40" y1="-70" x2="40" y2="-92"/>
+      <line x1="-40" y1="70" x2="-40" y2="92"/><line x1="0" y1="70" x2="0" y2="92"/><line x1="40" y1="70" x2="40" y2="92"/>
+    </g>
+    <rect x="-70" y="-70" width="140" height="140" rx="14" fill="#0e1a2b" stroke="url(#grn2)" stroke-width="4"/>
+    <rect x="-46" y="-46" width="92" height="92" rx="8" fill="#10b981" fill-opacity="0.10" stroke="#10b981" stroke-opacity="0.4"/>
+    <text x="0" y="18" text-anchor="middle" fill="#6bcfa5" font-size="52" font-weight="800" letter-spacing="2">AI</text>
+  </g>
+
+  <!-- course tag -->
+  <g>
+    <rect x="48" y="46" width="150" height="34" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-opacity="0.5"/>
+    <text x="66" y="69" fill="#6bcfa5" font-size="16" font-weight="700" letter-spacing="2">COURSE 02</text>
+  </g>
+
+  <!-- title -->
+  <text x="48" y="210" fill="#ffffff" font-size="46" font-weight="800" letter-spacing="1">AI WITH</text>
+  <text x="48" y="262" fill="#ffffff" font-size="46" font-weight="800" letter-spacing="1">CYBER SEC</text>
+  <text x="50" y="298" fill="#6bcfa5" font-size="17" font-weight="600" letter-spacing="2">MACHINE LEARNING &#8226; LLMs &#8226; DEFENSE</text>
+</svg>
