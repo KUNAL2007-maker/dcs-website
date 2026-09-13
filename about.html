@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth select-none">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+    <title>ABOUT US // DIVINE CYBER SPACE (DCS)</title>
+    <meta name="description" content="About Divine Cyber Space (DCS) — a structured, hands-on ethical hacking and cybersecurity program built to turn curiosity into practical, job-ready skills."/>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet"/>
+
+    <!-- FontAwesome 6 Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            screens: { "xs": "400px", "sm": "640px", "md": "768px", "lg": "1024px", "xl": "1280px" },
+            extend: {
+                colors: {
+                    "surface": "#131315",
+                    "surface-dim": "#131315",
+                    "surface-bright": "#39393b",
+                    "surface-container-lowest": "#0e0e10",
+                    "surface-container-low": "#1c1b1d",
+                    "surface-container": "#201f22",
+                    "surface-container-high": "#2a2a2c",
+                    "primary": "#10b981",
+                    "primary-glow": "#6bcfa5",
+                    "on-primary": "#04150d",
+                    "secondary": "#95d3ba",
+                    "background": "#09090b",
+                    "on-background": "#f3f4f6",
+                    "accent-gold": "#4ade80",
+                    "accent-purple": "#a855f7"
+                },
+                fontFamily: {
+                    sans: ["Inter", "sans-serif"],
+                    mono: ["JetBrains Mono", "monospace"]
+                },
+                maxWidth: { "max-width": "1280px" },
+                spacing: { "margin-desktop": "64px", "margin-mobile": "16px", "gutter": "24px" }
+            }
+        }
+    }
+    </script>
+
+    <style>
+        /* Base Reset & Custom Aesthetics — mirrors index.html */
+        * {
+            box-sizing: border-box;
+            border-radius: 0 !important; /* STRICT 0px sharp corners */
+        }
+        body {
+            background-color: #0b0f17;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: auto;
+        }
+
+        .glass-panel {
+            background: rgba(18, 24, 38, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .morph-reveal {
+            opacity: 0;
+            transform: translateY(25px) scale(0.99);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .morph-reveal.active { opacity: 1; transform: translateY(0) scale(1); }
+
+        .glow-text-primary { text-shadow: 0 0 6px rgba(16, 185, 129, 0.25); }
+
+        .font-mono { font-weight: 600; letter-spacing: 0.01em; }
+        .font-mono.font-bold { font-weight: 700; }
+        .font-mono.font-extrabold, .font-mono.font-black { font-weight: 800; }
+
+        .text-on-primary,
+        .text-on-primary *:not(i):not(svg):not([class*="fa-"]),
+        .hover\:text-on-primary:hover {
+            font-family: "Inter", system-ui, sans-serif !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.03em;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        i[class*="fa-"], .fa, svg[class*="fa-"] {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+            letter-spacing: normal !important;
+        }
+        i.fa-solid, i.fas { font-family: "Font Awesome 6 Free" !important; font-weight: 900 !important; }
+        i.fa-regular, i.far { font-family: "Font Awesome 6 Free" !important; font-weight: 400 !important; }
+        i.fa-brands, i.fab { font-family: "Font Awesome 6 Brands" !important; font-weight: 400 !important; }
+
+        /* Cross-device text hardening */
+        * { -webkit-tap-highlight-color: transparent; }
+        button, a { min-height: 44px; }
+        h1, h2, h3, h4, p, span, div, a, li { overflow-wrap: break-word; word-break: break-word; }
+        a:not([class*="block"]):not([class*="inline"]) { min-height: 0; }
+        body {
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+            background: linear-gradient(90deg, #10b981, #6bcfa5, #34d399);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+            z-index: 60; transition: width 0.12s linear; pointer-events: none;
+        }
+
+        .morph-card {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.35s ease, border-color 0.35s ease;
+            will-change: transform;
+        }
+        .morph-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 22px 48px -16px rgba(16, 185, 129, 0.38);
+            border-color: rgba(16, 185, 129, 0.6);
+        }
+
+        .fade-in-item { opacity: 0; }
+        .fade-in-item.in { animation: fadeInSoft 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeInSoft { from { opacity: 0; } to { opacity: 1; } }
+
+        @keyframes gradientShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .animate-gradient { background-size: 200% auto; animation: gradientShift 7s ease-in-out infinite; }
+
+        header.scrolled {
+            box-shadow: 0 10px 34px -12px rgba(0, 0, 0, 0.65);
+            border-bottom-color: rgba(16, 185, 129, 0.45);
+        }
+
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 2px;
+            background: linear-gradient(90deg, #10b981, #6bcfa5);
+            transform: scaleX(0); transform-origin: left center;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-link:hover::after, .nav-link.is-active::after { transform: scaleX(1); }
+        .nav-link.is-active { color: #6bcfa5; }
+
+        .btn-chamfer { position: relative; overflow: hidden; }
+        .btn-chamfer::before {
+            content: ''; position: absolute; top: 0; left: -75%; width: 50%; height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+            transform: skewX(-20deg); pointer-events: none;
+        }
+        .btn-chamfer:hover::before { animation: sheenSweep 0.85s ease; }
+        @keyframes sheenSweep { 0% { left: -75%; } 100% { left: 130%; } }
+
+        /* Vertical connector line for the learning-journey flow */
+        .flow-step { position: relative; }
+
+        @media (max-width: 640px) {
+            .morph-reveal { opacity: 1; transform: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto !important; }
+            .morph-reveal, .fade-in-item {
+                opacity: 1 !important; transform: none !important;
+                animation: none !important; transition: none !important;
+            }
+            .morph-card { transition: none !important; }
+            .morph-card:hover { transform: none !important; }
+            .animate-gradient { animation: none !important; }
+            #scroll-progress { transition: none !important; }
+            .nav-link::after { transition: none !important; }
+            .btn-chamfer:hover::before { animation: none !important; }
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col selection:bg-primary/30 selection:text-primary-glow scroll-smooth">
+
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress"></div>
+
+    <!-- TOP ANNOUNCEMENT BANNER -->
+    <div id="top" class="bg-surface-container border-b border-primary/30 text-primary py-2.5 px-4 text-center font-mono text-xs font-bold tracking-wider z-50 relative flex items-center justify-center gap-2">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>DIVINE CYBER SPACE // TRAIN | SECURE | SUCCEED • FROM BEGINNER TO CYBER PROFESSIONAL</span>
+    </div>
+
+    <!-- TOP APPBAR / NAVIGATION -->
+    <header class="sticky top-0 w-full z-50 transition-all duration-300 border-b border-primary/20 bg-surface-dim/95 backdrop-blur-xl">
+        <div class="max-w-max-width mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-2 group flex-shrink-0">
+                <div class="w-10 h-10 border-2 border-primary overflow-hidden bg-white flex items-center justify-center p-0.5">
+                    <img src="dcs-logo.png" alt="DCS Logo" class="w-full h-full object-contain"/>
+                </div>
+                <div class="leading-tight hidden sm:block">
+                    <div class="font-mono text-sm font-bold tracking-wider text-white">
+                        DIVINE CYBER SPACE
+                    </div>
+                    <div class="font-sans text-[10px] text-gray-300 font-medium tracking-wide">TRAIN | SECURE | SUCCEED</div>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden lg:flex items-center gap-4 font-mono text-xs font-semibold tracking-wide">
+                <a href="index.html#top" class="nav-link text-gray-300 hover:text-primary-glow transition-colors flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-house text-primary text-xs"></i> HOME
+                </a>
+                <a href="index.html#courses" class="nav-link text-gray-300 hover:text-primary-glow transition-colors flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-layer-group text-primary text-xs"></i> COURSES
+                </a>
+                <a href="index.html#faq" class="nav-link text-gray-300 hover:text-primary-glow transition-colors flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-circle-question text-primary text-xs"></i> FAQ
+                </a>
+                <a href="index.html#instructor-dcs" class="nav-link text-gray-300 hover:text-primary-glow transition-colors flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-envelope text-primary text-xs"></i> CONTACT
+                </a>
+                <a href="about.html" class="nav-link is-active transition-colors flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-circle-info text-primary text-xs"></i> ABOUT US
+                </a>
+            </nav>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <a href="index.html#courses" class="hidden sm:inline-flex font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-3 py-2 hover:bg-primary hover:text-on-primary transition-all items-center gap-2 font-bold whitespace-nowrap">
+                    <i class="fa-solid fa-graduation-cap text-sm"></i>
+                    <span>VIEW COURSES</span>
+                </a>
+                <!-- Mobile Menu Button -->
+                <button id="btn-mobile-menu" class="lg:hidden text-white p-2 text-xl" aria-label="Open menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden border-b border-primary/20 bg-surface-dim/95 px-4 py-4 font-mono text-xs font-semibold space-y-3">
+            <a href="index.html#top" class="block text-gray-200 hover:text-primary">01 // HOME</a>
+            <a href="index.html#courses" class="block text-gray-200 hover:text-primary">02 // COURSES</a>
+            <a href="index.html#faq" class="block text-gray-200 hover:text-primary">03 // FREQUENTLY ASKED QUESTIONS</a>
+            <a href="index.html#instructor-dcs" class="block text-gray-200 hover:text-primary">04 // CONTACT US</a>
+            <a href="about.html" class="block text-primary-glow">05 // ABOUT US</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow pt-10 md:pt-14 pb-16 md:pb-24 z-10 relative space-y-16 md:space-y-24">
+
+        <!-- PAGE HERO -->
+        <section class="max-w-max-width mx-auto px-margin-mobile md:px-margin-desktop text-center morph-reveal">
+            <div class="inline-flex items-center gap-2 font-sans text-[11px] sm:text-xs text-primary bg-surface-container/90 border border-primary/30 px-3 py-2 mb-6 backdrop-blur-md font-medium">
+                <i class="fa-solid fa-circle-info text-primary"></i>
+                <span class="text-white font-bold">About Divine Cyber Space</span>
+            </div>
+            <h1 class="font-extrabold text-4xl sm:text-5xl md:text-6xl tracking-tight uppercase leading-tight mb-4 text-white">
+                Learn. <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-glow to-secondary glow-text-primary animate-gradient">Practice.</span> Master.
+            </h1>
+            <p class="font-sans text-sm sm:text-lg text-gray-300 max-w-3xl mx-auto font-normal leading-relaxed">
+                Divine Cyber Space (DCS) turns curiosity about cybersecurity into practical, job-ready skills — through structured training, hands-on labs, and real mentorship.
+            </p>
+        </section>
+
+        <!-- ABOUT THE PROGRAM -->
+        <section class="max-w-max-width mx-auto px-margin-mobile md:px-margin-desktop morph-reveal">
+            <div class="glass-panel p-6 md:p-12 border-2 border-primary/40 space-y-8">
+
+                <div class="space-y-3">
+                    <div class="font-mono text-xs text-primary uppercase tracking-[0.2em]">[ ABOUT THE PROGRAM ]</div>
+                    <h2 class="font-bold text-2xl md:text-4xl text-white tracking-tight uppercase">Step Into The World Of Cybersecurity</h2>
+                    <div class="w-20 h-[3px] bg-primary"></div>
+                </div>
+
+                <p class="font-sans text-sm md:text-base text-gray-200 leading-relaxed font-normal max-w-4xl">
+                    Step into the world of cybersecurity with a structured ethical hacking program built to turn curiosity into practical skills.
+                    From understanding how cyber attacks happen to learning how systems can be tested and secured, the program gives you a complete
+                    learning journey through <strong class="text-white font-semibold">online training, guided assignments, real-world scenarios, and expert support</strong>.
+                    Whether you're starting from zero or looking to strengthen your existing knowledge, the program helps you develop the mindset,
+                    technical skills, and confidence needed to explore a career in cybersecurity.
+                </p>
+
+                <!-- What the program covers -->
+                <div class="pt-2 space-y-4">
+                    <div class="font-mono text-xs text-primary font-bold uppercase tracking-wider">[ WHAT THE PROGRAM COVERS ]</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5 morph-card fade-in-item flex flex-col">
+                            <div class="w-11 h-11 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-lg"><i class="fa-solid fa-user-secret"></i></div>
+                            <div class="font-mono text-sm font-bold text-white leading-snug">Ethical Hacking Fundamentals</div>
+                            <p class="font-sans text-[13px] text-gray-400 leading-relaxed font-normal">The hacker mindset, core concepts, and how attacks actually work.</p>
+                        </div>
+
+                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5 morph-card fade-in-item flex flex-col">
+                            <div class="w-11 h-11 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-lg"><i class="fa-solid fa-laptop-code"></i></div>
+                            <div class="font-mono text-sm font-bold text-white leading-snug">Hands-On Practical Sessions</div>
+                            <p class="font-sans text-[13px] text-gray-400 leading-relaxed font-normal">Guided labs where you apply every concept on live systems.</p>
+                        </div>
+
+                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5 morph-card fade-in-item flex flex-col">
+                            <div class="w-11 h-11 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-lg"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div class="font-mono text-sm font-bold text-white leading-snug">Cybersecurity Essentials</div>
+                            <p class="font-sans text-[13px] text-gray-400 leading-relaxed font-normal">The foundations every security professional is expected to know.</p>
+                        </div>
+
+                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5 morph-card fade-in-item flex flex-col">
+                            <div class="w-11 h-11 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-lg"><i class="fa-solid fa-briefcase"></i></div>
+                            <div class="font-mono text-sm font-bold text-white leading-snug">Industry-Oriented Skills</div>
+                            <p class="font-sans text-[13px] text-gray-400 leading-relaxed font-normal">What employers hire for — mapped to real security job roles.</p>
+                        </div>
+
+                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5 morph-card fade-in-item flex flex-col">
+                            <div class="w-11 h-11 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-lg"><i class="fa-solid fa-toolbox"></i></div>
+                            <div class="font-mono text-sm font-bold text-white leading-snug">Security Tools &amp; Techniques</div>
+                            <p class="font-sans text-[13px] text-gray-400 leading-relaxed font-normal">Burp Suite, Wireshark, Nmap and the workflows that use them.</p>
+                        </div>
+
+                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5 morph-card fade-in-item flex flex-col">
+                            <div class="w-11 h-11 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-lg"><i class="fa-solid fa-crosshairs"></i></div>
+                            <div class="font-mono text-sm font-bold text-white leading-snug">Real-World Attack Scenarios</div>
+                            <p class="font-sans text-[13px] text-gray-400 leading-relaxed font-normal">Practise on realistic scenarios modelled on actual incidents.</p>
+                        </div>
+
+                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5 morph-card fade-in-item flex flex-col">
+                            <div class="w-11 h-11 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-lg"><i class="fa-solid fa-network-wired"></i></div>
+                            <div class="font-mono text-sm font-bold text-white leading-snug">Network Security Concepts</div>
+                            <p class="font-sans text-[13px] text-gray-400 leading-relaxed font-normal">How networks are attacked, monitored, and defended end to end.</p>
+                        </div>
+
+                        <div class="bg-surface-container/90 border border-primary/30 p-4 space-y-2.5 morph-card fade-in-item flex flex-col">
+                            <div class="w-11 h-11 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-lg"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                            <div class="font-mono text-sm font-bold text-white leading-snug">Vulnerability Assessment Basics</div>
+                            <p class="font-sans text-[13px] text-gray-400 leading-relaxed font-normal">Find, rate, and report weaknesses before attackers do.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY CHOOSE DCS -->
+        <section class="max-w-max-width mx-auto px-margin-mobile md:px-margin-desktop morph-reveal">
+            <div class="glass-panel p-6 md:p-12 border-2 border-primary/40 space-y-8">
+
+                <div class="text-center space-y-3">
+                    <div class="inline-flex items-center gap-2 font-mono text-xs text-primary bg-primary/10 border border-primary/40 px-3 py-1.5 font-bold uppercase tracking-wide">
+                        <i class="fa-solid fa-bolt"></i> Learn. Practice. Master.
+                    </div>
+                    <h2 class="font-bold text-2xl md:text-4xl text-white tracking-tight uppercase">Why Choose DCS</h2>
+                    <p class="font-sans text-sm md:text-base text-gray-200 leading-relaxed font-normal max-w-4xl mx-auto">
+                        Learn with purpose. Grow with direction. DCS focuses on turning your interest in cybersecurity into skills you can actually use.
+                        Learn directly with <strong class="text-white font-semibold">personalized guidance</strong>, understand real-world security challenges,
+                        work on your technical abilities, and build confidence step by step. With <strong class="text-white font-semibold">1-to-1 mentorship,
+                        internship opportunities, job placement support, and career guidance</strong>, DCS is built to help you move from learning cybersecurity
+                        to building your future in IT.
+                    </p>
+                </div>
+
+                <!-- Three pillars -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="bg-surface-container/90 border border-primary/30 p-6 space-y-3 morph-card fade-in-item flex flex-col">
+                        <div class="w-12 h-12 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-xl"><i class="fa-solid fa-bullseye"></i></div>
+                        <h3 class="font-bold text-lg text-white">Purpose-Driven Learning</h3>
+                        <p class="font-sans text-sm text-gray-300 leading-relaxed font-normal">Every module is tied to a clear goal, so you always know why you're learning it and where it leads.</p>
+                    </div>
+                    <div class="bg-surface-container/90 border border-primary/30 p-6 space-y-3 morph-card fade-in-item flex flex-col">
+                        <div class="w-12 h-12 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-xl"><i class="fa-solid fa-user-tie"></i></div>
+                        <h3 class="font-bold text-lg text-white">Career &amp; Placement Support</h3>
+                        <p class="font-sans text-sm text-gray-300 leading-relaxed font-normal">Internship opportunities, job placement support, resume reviews, and interview preparation for security roles.</p>
+                    </div>
+                    <div class="bg-surface-container/90 border border-primary/30 p-6 space-y-3 morph-card fade-in-item flex flex-col">
+                        <div class="w-12 h-12 bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-xl"><i class="fa-solid fa-terminal"></i></div>
+                        <h3 class="font-bold text-lg text-white">Hands-On Cybersecurity Skills</h3>
+                        <p class="font-sans text-sm text-gray-300 leading-relaxed font-normal">Build real, demonstrable skills through practical labs and live attack-and-defense scenarios — not just theory.</p>
+                    </div>
+                </div>
+
+                <!-- Closing banner -->
+                <div class="bg-primary/10 border border-primary/40 p-5 text-center">
+                    <div class="font-mono text-sm md:text-base text-primary-glow font-bold uppercase tracking-wider glow-text-primary">
+                        Learn With Direction, Grow With Purpose
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="max-w-max-width mx-auto px-margin-mobile md:px-margin-desktop text-center morph-reveal">
+            <div class="glass-panel p-8 md:p-12 border border-primary/30 space-y-5">
+                <h2 class="font-bold text-2xl md:text-3xl text-white uppercase tracking-tight">Ready To Start Your Cyber Journey?</h2>
+                <p class="font-sans text-sm text-gray-300 max-w-xl mx-auto font-normal">Explore our three signature courses and pick the path that fits your goals.</p>
+                <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+                    <a href="index.html#courses" class="w-full sm:w-auto font-mono text-sm bg-primary text-on-primary px-8 py-4 font-extrabold tracking-wide uppercase hover:bg-primary-glow hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 btn-chamfer">
+                        <span>EXPLORE THE COURSES</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                    <a href="index.html#instructor-dcs" class="w-full sm:w-auto font-mono text-sm border border-primary/40 text-primary-glow px-8 py-4 font-bold tracking-wide uppercase hover:bg-primary/10 transition-all flex items-center justify-center gap-3">
+                        <span>CONTACT US</span>
+                        <i class="fa-solid fa-envelope text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full border-t border-primary/20 bg-surface-dim/95 backdrop-blur-md py-12 font-sans text-xs z-10 relative">
+        <div class="max-w-max-width mx-auto px-margin-mobile md:px-margin-desktop space-y-8">
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <div class="font-bold text-base text-white flex items-center gap-2 font-mono">
+                        <i class="fa-solid fa-lock text-primary"></i> DIVINE CYBER SPACE (DCS)
+                    </div>
+                    <div class="text-primary-glow text-xs font-mono font-bold mt-1">TRAIN | SECURE | SUCCEED</div>
+                    <div class="text-gray-400 text-xs mt-1">Founder &amp; Lead Instructor: Jayraj Bhaip</div>
+                </div>
+
+                <div class="font-mono text-xs text-gray-300 space-y-1">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-phone text-primary"></i>
+                        <span>+91 8850592849</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-envelope text-primary"></i>
+                        <span>Privatelimiteddcs@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-primary/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-400 text-xs">
+                <div>© 2026 DIVINE CYBER SPACE (DCS) // ALL RIGHTS RESERVED</div>
+                <div class="flex gap-6 font-mono">
+                    <a href="about.html" class="hover:text-primary">About Us</a>
+                    <a href="index.html#courses" class="hover:text-primary">Courses</a>
+                    <a href="index.html#faq" class="hover:text-primary">FAQ</a>
+                    <a href="index.html#instructor-dcs" class="hover:text-primary">Contact Support</a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- FLOATING WHATSAPP BUTTON (circular, bottom-right) -->
+    <a href="https://wa.me/qr/MZCXKYPORKX4B1" target="_blank" rel="noopener noreferrer"
+       id="whatsapp-fab" title="Chat with us on WhatsApp" aria-label="Chat with us on WhatsApp"
+       class="fixed bottom-6 right-6 z-50 w-14 h-14 flex items-center justify-center bg-[#25D366] text-white shadow-2xl hover:scale-110 transition-transform"
+       style="border-radius:9999px !important">
+        <span class="absolute inset-0 bg-[#25D366] opacity-60 animate-ping" style="border-radius:9999px !important"></span>
+        <i class="fa-brands fa-whatsapp text-3xl relative"></i>
+    </a>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('btn-mobile-menu').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Morph reveal on scroll
+        const morphObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.morph-reveal').forEach(el => morphObserver.observe(el));
+
+        // Staggered fade-in
+        const fadeItems = document.querySelectorAll('.fade-in-item');
+        function siblingIndex(el) {
+            let i = 0, sib = el;
+            while ((sib = sib.previousElementSibling) !== null) {
+                if (sib.classList && sib.classList.contains('fade-in-item')) i++;
+            }
+            return i;
+        }
+        if ('IntersectionObserver' in window) {
+            const fadeObserver = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationDelay = (siblingIndex(entry.target) * 80) + 'ms';
+                        entry.target.classList.add('in');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+            fadeItems.forEach(el => fadeObserver.observe(el));
+        } else {
+            fadeItems.forEach(el => el.classList.add('in'));
+        }
+
+        // Scroll progress + header elevation
+        const progressBar = document.getElementById('scroll-progress');
+        const siteHeader = document.querySelector('header');
+        let ticking = false;
+        function onScrollFrame() {
+            const doc = document.documentElement;
+            const max = doc.scrollHeight - doc.clientHeight;
+            const y = window.scrollY || doc.scrollTop;
+            if (progressBar) progressBar.style.width = max > 0 ? ((y / max) * 100) + '%' : '0%';
+            if (siteHeader) siteHeader.classList.toggle('scrolled', y > 12);
+            ticking = false;
+        }
+        window.addEventListener('scroll', () => {
+            if (!ticking) { window.requestAnimationFrame(onScrollFrame); ticking = true; }
+        }, { passive: true });
+        onScrollFrame();
+    </script>
+</body>
+</html>
