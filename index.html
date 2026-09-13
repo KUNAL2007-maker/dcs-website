@@ -274,6 +274,54 @@
             pointer-events: none;
         }
 
+        /* ADMIN REGISTRATIONS TABLE -> STACKED CARDS ON PHONES & TABLETS (<1024px).
+           The 11-column table forces horizontal scrolling on a phone, which hides
+           the enquiry toggle and the remove button. Below lg we relayout each row
+           as a label/value card so admins can work from mobile. Desktop is untouched. */
+        @media (max-width: 1023px) {
+            /* Reclaim the wasted side gutters so the panel uses the full phone width.
+               Scoped to #admin-modal (ID) so it overrides the generic .glass-panel
+               padding without affecting the cart drawer or any other panel. */
+            #admin-modal .glass-panel { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+            #admin-modal .overflow-x-auto { overflow-x: visible; }
+            #admin-modal table,
+            #admin-modal tbody,
+            #admin-modal tr,
+            #admin-modal td { display: block; width: auto; }
+            #admin-modal thead { display: none; }
+
+            #admin-modal tbody tr {
+                margin: 0 0 0.7rem;
+                border: 1px solid rgba(16,185,129,0.25);
+                background: rgba(16,185,129,0.03);
+            }
+            #admin-modal tbody td:not(.admin-msg-cell) {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+                text-align: right;
+                white-space: normal !important;
+                padding: 0.55rem 0.7rem !important;
+                border-top: 1px solid rgba(16,185,129,0.10);
+            }
+            #admin-modal tbody td[data-label]::before {
+                content: attr(data-label);
+                flex-shrink: 0;
+                text-align: left;
+                font-family: 'JetBrains Mono','Courier New',monospace;
+                font-size: 10px;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                color: #6b7280;
+            }
+            #admin-modal tbody td.admin-col-idx { display: none; }
+            #admin-modal tbody td.admin-col-idx + td { border-top: none; }
+            #admin-modal tbody td.admin-col-courses { align-items: flex-start; }
+            #admin-modal tbody td.admin-col-courses > div { white-space: normal !important; text-align: right; }
+            #admin-modal tbody td.admin-msg-cell { display: block; text-align: center; }
+        }
+
         /* Nav link animated underline */
         .nav-link { position: relative; }
         .nav-link::after {
@@ -364,7 +412,7 @@
 
     <!-- TOP APPBAR / NAVIGATION -->
     <header id="top" class="sticky top-0 w-full z-50 transition-all duration-300 border-b border-primary/20 bg-surface-dim/95 backdrop-blur-xl">
-        <div class="max-w-max-width mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+        <div class="max-w-max-width mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-2 md:gap-4">
 
             <!-- Brand Logo -->
             <a href="#" class="flex items-center gap-2 group flex-shrink-0">
@@ -372,7 +420,7 @@
                     <img src="dcs-logo.png" alt="DCS Logo" class="w-full h-full object-contain"/>
                 </div>
                 <div class="leading-tight">
-                    <div class="font-mono text-sm font-bold tracking-wider text-white whitespace-nowrap">
+                    <div class="font-mono text-xs sm:text-sm font-bold tracking-wide sm:tracking-wider text-white whitespace-nowrap">
                         DIVINE CYBER SPACE
                     </div>
                     <div class="font-sans text-[10px] text-gray-300 font-medium tracking-wide hidden sm:block">TRAIN | SECURE | SUCCEED</div>
@@ -403,19 +451,19 @@
                 <!-- Admin console — revealed only for allowlisted accounts.
                      Hiding this is convenience, not security: Firestore rules
                      are what actually refuse the data. -->
-                <button id="btn-admin" class="hidden font-mono text-xs bg-accent-gold/10 border border-accent-gold/40 text-accent-gold px-3 py-2 hover:bg-accent-gold hover:text-black transition-all flex items-center gap-2 font-bold whitespace-nowrap">
+                <button id="btn-admin" class="hidden font-mono text-xs bg-accent-gold/10 border border-accent-gold/40 text-accent-gold px-2 sm:px-3 py-2 hover:bg-accent-gold hover:text-black transition-all flex items-center gap-2 font-bold whitespace-nowrap">
                     <i class="fa-solid fa-shield-halved text-sm"></i>
                     <span class="hidden sm:inline">ADMIN</span>
                 </button>
 
                 <!-- Account / Login (Firebase Auth) -->
-                <button id="btn-account" class="font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-3 py-2 hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2 font-bold whitespace-nowrap">
+                <button id="btn-account" class="font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-2 sm:px-3 py-2 hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2 font-bold whitespace-nowrap">
                     <i id="account-icon" class="fa-solid fa-right-to-bracket text-sm"></i>
                     <span id="account-label" class="hidden sm:inline">LOG IN</span>
                 </button>
 
                 <!-- Cart Button with Counter -->
-                <button id="btn-cart-toggle" class="font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-3 py-2 hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2 font-bold whitespace-nowrap">
+                <button id="btn-cart-toggle" class="font-mono text-xs bg-primary/10 border border-primary/40 text-primary-glow px-2 sm:px-3 py-2 hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2 font-bold whitespace-nowrap">
                     <i class="fa-solid fa-cart-shopping text-sm"></i>
                     <span class="hidden sm:inline">CART (<span id="cart-count">0</span>)</span>
                     <span class="sm:hidden">(<span id="cart-count-mobile">0</span>)</span>
@@ -2422,7 +2470,7 @@
             STAT_IDS.forEach(id => { document.getElementById(id).textContent = '—'; });
 
         const tableMessage = msg =>
-            `<tr><td colspan="11" class="px-3 py-10 text-center text-gray-500 font-mono text-xs">${msg}</td></tr>`;
+            `<tr><td colspan="11" class="admin-msg-cell px-3 py-10 text-center text-gray-500 font-mono text-xs">${msg}</td></tr>`;
 
         // Rows belonging to the current tab: active list hides removed rows,
         // the History tab shows only removed rows.
@@ -2486,17 +2534,17 @@
                     : `<button type="button" data-action="remove" data-id="${id}" class="font-mono text-[10px] px-2.5 py-1 border border-red-500/40 text-red-300 hover:bg-red-500 hover:text-white transition-all whitespace-nowrap"><i class="fa-solid fa-trash-can"></i> REMOVE</button>`;
 
                 return `<tr class="border-t border-primary/10 hover:bg-primary/5 align-top">
-                    <td class="px-3 py-2.5 font-mono text-gray-500">${i + 1}</td>
-                    <td class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(fmtDate(r.createdAt))}</td>
-                    <td class="px-3 py-2.5 text-white font-semibold whitespace-nowrap">${esc(r.name)}</td>
-                    <td class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(r.mobile)}</td>
-                    <td class="px-3 py-2.5 text-[11px] whitespace-nowrap">${esc(r.email)}</td>
-                    <td class="px-3 py-2.5 whitespace-nowrap">${esc(r.profession)}</td>
-                    <td class="px-3 py-2.5">${courseList(r).map(c => `<div class="whitespace-nowrap">&bull; ${esc(c)}</div>`).join('')}</td>
-                    <td class="px-3 py-2.5 text-right font-mono text-primary-glow whitespace-nowrap">${esc(inr(Number(r.amount) || 0))}</td>
-                    <td class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(r.reference)}</td>
-                    <td class="px-3 py-2.5 whitespace-nowrap">${enquiryCell}</td>
-                    <td class="px-3 py-2.5">${actionsCell}</td>
+                    <td class="admin-col-idx px-3 py-2.5 font-mono text-gray-500">${i + 1}</td>
+                    <td data-label="Date" class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(fmtDate(r.createdAt))}</td>
+                    <td data-label="Name" class="px-3 py-2.5 text-white font-semibold whitespace-nowrap">${esc(r.name)}</td>
+                    <td data-label="Mobile" class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(r.mobile)}</td>
+                    <td data-label="Email" class="px-3 py-2.5 text-[11px] whitespace-nowrap">${esc(r.email)}</td>
+                    <td data-label="Profession" class="px-3 py-2.5 whitespace-nowrap">${esc(r.profession)}</td>
+                    <td data-label="Courses" class="admin-col-courses px-3 py-2.5">${courseList(r).map(c => `<div class="whitespace-nowrap">&bull; ${esc(c)}</div>`).join('')}</td>
+                    <td data-label="Amount" class="px-3 py-2.5 text-right font-mono text-primary-glow whitespace-nowrap">${esc(inr(Number(r.amount) || 0))}</td>
+                    <td data-label="Reference" class="px-3 py-2.5 font-mono text-[11px] whitespace-nowrap">${esc(r.reference)}</td>
+                    <td data-label="Enquiry" class="px-3 py-2.5 whitespace-nowrap">${enquiryCell}</td>
+                    <td data-label="Actions" class="px-3 py-2.5">${actionsCell}</td>
                 </tr>`;
             }).join('');
         }
