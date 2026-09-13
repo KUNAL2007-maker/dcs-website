@@ -58,6 +58,6 @@
 
   <!-- title -->
   <text x="48" y="210" fill="#ffffff" font-size="46" font-weight="800" letter-spacing="1">AI WITH</text>
-  <text x="48" y="262" fill="#ffffff" font-size="46" font-weight="800" letter-spacing="1">CYBER SEC</text>
+  <text x="48" y="262" fill="#ffffff" font-size="46" font-weight="800" letter-spacing="1">CYBER SECURITY</text>
   <text x="50" y="298" fill="#6bcfa5" font-size="17" font-weight="600" letter-spacing="2">MACHINE LEARNING &#8226; LLMs &#8226; DEFENSE</text>
 </svg>
